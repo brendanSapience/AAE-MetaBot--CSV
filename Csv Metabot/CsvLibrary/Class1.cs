@@ -185,6 +185,20 @@ namespace CsvLibrary
             Save_File_As_CSV();
         }
 
+        // Split Cell Value into other column
+        public void Copy_Cell_Content_To_Other_Column(String OriginColumn, int LineNumber, String RegexPatternGroupToCopy, String TargetColumn)
+        {
+            String CellContent = Get_Cell_Content(OriginColumn, LineNumber);
+            var pattern = RegexPatternGroupToCopy;
+            var matches = Regex.Matches(CellContent, pattern);
+            if (matches.Count > 0 && matches[0].Groups.Count > 1)
+            {
+                String ValueToCopy = matches[0].Groups[1].Value;
+                Console.WriteLine("DEBUG: Value Extracted: " + ValueToCopy);
+                Set_Cell_Content(TargetColumn, LineNumber, ValueToCopy);
+            }
+
+        }
 
         private void Save_Cell_Value_No_Save(String ColumnName, int LineNumber, String NewValue)
         {
@@ -229,8 +243,10 @@ namespace CsvLibrary
             }
 
             String NewFilePath = @"C:\Users\brendan.sapience\Google Drive\AutomationAnywhere\IQ Bot Output\Output\Z_Output_Post_Processing\2_[8903ca8a-2995-4334-85bd-6d0c7ca1390b]_Medical Innovations 87167.pdf.csv";
-            NewFilePath = this.FilePath;
-            //after your loop
+            
+            // Uncomment the following line before build!!
+            //NewFilePath = this.FilePath;
+            
             File.WriteAllText(NewFilePath, csv.ToString());
         }
     }
