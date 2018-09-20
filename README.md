@@ -37,6 +37,6 @@ The CSV metabot folder contains the source code for the dll file that the metabo
 
 ## Authors
 
-* **Bren Sapience** - *Initial work* - [BigDoggie](https://github.com/BrendanSapience)
+* **Bren Sapience** - *Initial work* - [GitHub](https://github.com/BrendanSapience)
 
 
