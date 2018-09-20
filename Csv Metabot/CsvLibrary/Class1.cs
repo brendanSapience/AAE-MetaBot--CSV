@@ -79,14 +79,14 @@ namespace CsvLibrary
         public String Get_Column_Names()
         {
 
-            var result = String.Join(", ", dict[0].ToArray());
+            var result = String.Join(",", dict[0].ToArray());
             return result;
         }
 
         public String Get_Line_Content(int LineNumber)
         {
 
-            var result = String.Join(", ", dict[LineNumber].ToArray());
+            var result = String.Join(",", dict[LineNumber].ToArray());
             return result;
         }
 
@@ -201,7 +201,8 @@ namespace CsvLibrary
                     String MyLine = Get_Line_Content(entry.Key);
                     //Console.WriteLine("Debug Line [" +entry.Key+"]:"+ MyLine);
                     String CellValueToCheck = entry.Value[ColumnIndex];
-                    //Console.WriteLine("Checking Value: " + CellValueToCheck + " against Regex: " + @RegExPattern);
+                   // Console.WriteLine("Checking Value: " + CellValueToCheck + " against Regex: " + @RegExPattern);
+                    
                     var pattern = @RegExPattern;
                     var matches = Regex.Matches(CellValueToCheck, pattern);
                     if(entry.Key == 0) // if First Line, then keep it regardless of match or no match
@@ -219,8 +220,9 @@ namespace CsvLibrary
                         {
                             //Console.WriteLine("Match Found, Removing Line.");
                         }
-                        //Console.ReadKey();
-                    }
+                    //Console.ReadKey();
+                    //Console.ReadKey();
+                }
 
 
             }
@@ -267,6 +269,49 @@ namespace CsvLibrary
             }
             this.dict = NewDict;
             Save_File_As_CSV(InputFile);
+        }
+
+        public void Append_If_Column_Matches_Pattern(String InputFile, String ColumnNameToMatch, String RegExPattern, String ColumnNameToModify, String StringToAppend, Boolean AppendAtEnd)
+        {
+            SetFile(InputFile);
+ 
+            int ColumnIndex = Get_Column_Index(ColumnNameToMatch);
+            int ColumnIndexToModify = Get_Column_Index(ColumnNameToModify);
+
+            foreach (KeyValuePair<int, List<String>> entry in this.dict)
+            {
+
+                //Console.WriteLine("Debug Column Index | Name: " + ColumnIndex + ":" + ColumnName);
+                String MyLine = Get_Line_Content(entry.Key);
+                //Console.WriteLine("Debug Line: " + MyLine);
+                String CellValueToCheck = entry.Value[ColumnIndex];
+                //Console.WriteLine("Checking Value: " + CellValueToCheck + " against Regex: " + @RegExPattern);
+                var pattern = @RegExPattern;
+                var matches = Regex.Matches(CellValueToCheck, pattern);
+                if (entry.Key > 0 && matches.Count != 0) // not first line AND match
+                {
+
+                    String OriginalValueOfCell = entry.Value[ColumnIndexToModify];
+                    String NewValueCell = "";
+                    if (OriginalValueOfCell.StartsWith("\""))
+                    {
+                        NewValueCell = ReplaceFirst(OriginalValueOfCell,"\"", "\""+StringToAppend);
+                    }
+                    else
+                    {
+                        NewValueCell = StringToAppend + OriginalValueOfCell;
+                    }
+                    entry.Value[ColumnIndexToModify] = NewValueCell;
+                    //Console.WriteLine("Appending Value: " + OriginalValueOfCell + " to: " +NewValueCell+":");
+                }
+                
+                //Console.ReadKey();
+
+
+
+            }
+            Save_File_As_CSV(InputFile);
+           // Console.ReadKey();
         }
 
         // Split Cell Value into other column
@@ -322,6 +367,14 @@ namespace CsvLibrary
 
             }
             Save_File_As_CSV(InputFile);
+        }
+
+        private String ReplaceFirst(String MyString, String PatternToReplace, String StrToReplaceWith)
+        {
+            var regex = new Regex(Regex.Escape(PatternToReplace));
+
+            var newText = regex.Replace(MyString, StrToReplaceWith, 1);
+            return newText;
         }
 
         private int Get_Column_Index(String ColumnName)

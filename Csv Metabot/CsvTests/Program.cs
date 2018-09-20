@@ -23,10 +23,10 @@ namespace CsvTests
             //String NewContent1 = utils.Transform_Cell_Content("Item_Description", 3, @".* size (.*)");
            // utils.Transform_Column_Content("Item_Description", @".* size (\d+).*");
            
-            utils.Delete_Line_If_Cell_Matches_Pattern(FilePath,"Amount", @"Page.*|.* .*|Amount");
+            utils.Delete_Line_If_Cell_Matches_Pattern(FilePath,"Amount", @"Page.*|Page .*|.*, .*");
+            utils.Append_If_Column_Matches_Pattern(FilePath, "Description", ".*Debit.*", "Amount", "-", false);
+            //utils.Keep_Line_If_Cell_Matches_Pattern(FilePath, "Description", @"((?:Transfer (?:Credit|Debit) (?:B\/O|A\/C)){1}[ ]*:.*(?: Hess){1}.*)|^Cash Concentration.*");
 
-            utils.Keep_Line_If_Cell_Matches_Pattern(FilePath, "Description", @"((?:Transfer (?:Credit|Debit) (?:B\/O|A\/C)){1}[ ]*:.*(?: Hess){1}.*)|^Cash Concentration.*");
-            
             //((?:Book Transfer (?:Credit|Debit) (?:B\/O|A\/C)){1}[ ]*:.*(?: Hess){1}.*)|(Cash Concentration.*)/i
 
             // utils.SetFile(@"C:\Users\brendan.sapience\Google Drive\AutomationAnywhere\IQ Bot Output\Output\Z_Output_Post_Processing\Layout1_Train(5)_Hess - Full.csv");
