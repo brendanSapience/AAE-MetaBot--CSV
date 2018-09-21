@@ -65,6 +65,21 @@ namespace CsvLibrary
             reader.Close();
         }
 
+        // NOT TESTED - Delete an entire Line if a particular cell of a given column matches a regular expression pattern
+        public void Delete_Column(String InputFile, String ColumnName)
+        {
+            SetFile(InputFile);
+            IDictionary<int, List<String>> NewDict = new Dictionary<int, List<String>>();
+            int ColumnIndex = Get_Column_Index(ColumnName);
+
+            foreach (KeyValuePair<int, List<String>> entry in this.dict)
+            {
+                String MyLine = Get_Line_Content(entry.Key);
+                entry.Value.RemoveAt(ColumnIndex);
+            }
+            Save_File_As_CSV(InputFile);
+        }
+
         // Returns the total number of columns within the CSV File
         public int Get_Number_Of_Columns()
         {
@@ -211,6 +226,7 @@ namespace CsvLibrary
             Save_File_As_CSV(InputFile);
         }
 
+
         // Kepp only Lines that match a regular expression
         public void Keep_Line_If_Cell_Matches_Pattern(String InputFile, String ColumnName, String RegExPattern)
         {
@@ -295,31 +311,6 @@ namespace CsvLibrary
                // Console.WriteLine("DEBUG: Value Extracted: " + ValueToCopy);
                 Set_Cell_Content(InputFile,TargetColumn, LineNumber, ValueToCopy);
             }
-
-        }
-
-        // Internal Function
-        private void Save_Cell_Value_No_Save(String ColumnName, int LineNumber, String NewValue)
-        {
-            int ColumnIndex = Get_Column_Index(ColumnName);
-
-            foreach (KeyValuePair<int, List<String>> entry in this.dict)
-            {
-
-                if (entry.Key == LineNumber)
-                {
-                    entry.Value[ColumnIndex] = NewValue;
-                }
-
-            }
-            
-        }
-
-        // Internal Function
-        public void Save_Cell_Value(String InputFile, String ColumnName, int LineNumber, String NewValue)
-        {
-            Save_Cell_Value_No_Save(ColumnName, LineNumber, NewValue);
-            Save_File_As_CSV(InputFile);
         }
 
         // Change the value of multiple cells in a column based on Range
@@ -336,6 +327,29 @@ namespace CsvLibrary
                     entry.Value[ColumnIndex] = NewValue;
                 }
             }
+            Save_File_As_CSV(InputFile);
+        }
+
+        // Internal Function
+        private void Save_Cell_Value_No_Save(String ColumnName, int LineNumber, String NewValue)
+        {
+            int ColumnIndex = Get_Column_Index(ColumnName);
+
+            foreach (KeyValuePair<int, List<String>> entry in this.dict)
+            {
+
+                if (entry.Key == LineNumber)
+                {
+                    entry.Value[ColumnIndex] = NewValue;
+                }
+            }
+
+        }
+
+        // Internal Function
+        public void Save_Cell_Value(String InputFile, String ColumnName, int LineNumber, String NewValue)
+        {
+            Save_Cell_Value_No_Save(ColumnName, LineNumber, NewValue);
             Save_File_As_CSV(InputFile);
         }
 
