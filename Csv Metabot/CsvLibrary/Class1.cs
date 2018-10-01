@@ -65,80 +65,109 @@ namespace CsvLibrary
             reader.Close();
         }
 
-        // NOT TESTED - Delete an entire Line if a particular cell of a given column matches a regular expression pattern
-        public void Delete_Column(String InputFile, String ColumnName)
+        // Tested - Delete an entire Line if a particular cell of a given column matches a regular expression pattern
+        public int Delete_Column(String InputFile, String ColumnName)
         {
             SetFile(InputFile);
             IDictionary<int, List<String>> NewDict = new Dictionary<int, List<String>>();
             int ColumnIndex = Get_Column_Index(ColumnName);
-
-            foreach (KeyValuePair<int, List<String>> entry in this.dict)
+            if(ColumnIndex > -1)
             {
-                String MyLine = Get_Line_Content(entry.Key);
-                entry.Value.RemoveAt(ColumnIndex);
-            }
-            Save_File_As_CSV(InputFile);
-        }
-
-        // Returns the total number of columns within the CSV File
-        public int Get_Number_Of_Columns()
-        {
-            return this.dict[0].Count;
-        }
-
-        // Returns the total number of lines within the CSV File (including the header line)
-        public int Get_Number_Of_Lines()
-        {
-            return this.dict.Count;
-        }
-
-        // Returns all the column names in CSV format
-        public String Get_Column_Names()
-        {
-            var result = String.Join(",", dict[0].ToArray());
-            return result;
-        }
-
-        // Returns the content of a line in CSV format
-        public String Get_Line_Content(int LineNumber)
-        {
-            var result = String.Join(",", dict[LineNumber].ToArray());
-            return result;
-        }
-
-        // Add a Column between two other columns (cannot add a column at the beginning or at the end).
-        public void Add_Column_Between(String InputFile, String ColumnName1, String ColumnName2, String ColumnNameToAdd,String EmptyDataFiller)
-        {
-            List<String> AllColumns = this.dict[0];
-            int IndexBefore = AllColumns.IndexOf(ColumnName1);
-            int IndexAfter = AllColumns.IndexOf(ColumnName2);
-
-            Add_Column_Between(InputFile, IndexBefore, IndexAfter, ColumnNameToAdd, EmptyDataFiller);
-        }
-
-        // Same as Above, but based on column numbers (internal only)
-        private void Add_Column_Between(String InputFile, int ColumnNumber1, int ColumnNumber2, String ColumnNameToAdd, String EmptyDataFiller)
-        {
-            if (ColumnNumber2 - ColumnNumber1 != 1)
-            {
-                // ERROR!
-            }
-            foreach (KeyValuePair<int, List<String>> entry in this.dict)
-            {
-                // do something with entry.Value or entry.Key
-                String NewValueToInsert = ColumnNameToAdd;
-                if (entry.Key != 0)
+                foreach (KeyValuePair<int, List<String>> entry in this.dict)
                 {
-                    NewValueToInsert = EmptyDataFiller;
+                    String MyLine = Get_Line_Content(entry.Key);
+                    entry.Value.RemoveAt(ColumnIndex);
                 }
-                entry.Value.Insert(ColumnNumber1 + 1, NewValueToInsert);
+                Save_File_As_CSV(InputFile);
+            }
+            return ColumnIndex;
+
+        }
+
+        public int Get_Number_Of_Columns(String InputFile)
+        {
+            SetFile(InputFile);
+            return Get_Number_Of_Columns();
+        }
+
+        public int Get_Number_Of_Lines(String InputFile)
+        {
+            SetFile(InputFile);
+            return Get_Number_Of_Lines();
+        }
+
+        public String Get_Column_Names(String InputFile)
+        {
+            SetFile(InputFile);
+            return Get_Column_Names();
+        }
+        
+            public int Get_Column_Index(String InputFile, String ColumnName)
+        {
+            SetFile(InputFile);
+            return Get_Column_Index(ColumnName);
+        }
+
+        public String Get_Line_Content(String InputFile, int LineNumber)
+        {
+            SetFile(InputFile);
+            return Get_Line_Content(LineNumber);
+        }
+
+        public int Add_Column_Before(String InputFile, String ColumnName, String ColumnNameToAdd, String EmptyCellFiller)
+        {
+            SetFile(InputFile);
+            int Index = Get_Column_Index(ColumnName);
+            if (Index > -1) // if column found
+            {
+                foreach (KeyValuePair<int, List<String>> entry in this.dict)
+                {
+                    // do something with entry.Value or entry.Key
+                    String NewValueToInsert = ColumnNameToAdd;
+                    if (entry.Key != 0)
+                    {
+                        NewValueToInsert = EmptyCellFiller;
+                    }
+                    entry.Value.Insert(Index, NewValueToInsert);
+
+                }
+                Save_File_As_CSV(InputFile);
+                
+            }
+            return Index;
+        }
+
+        public int Add_Column_After(String InputFile, String ColumnName, String ColumnNameToAdd, String EmptyCellFiller)
+        {
+            SetFile(InputFile);
+            int Index = Get_Column_Index(ColumnName);
+            if (Index > -1) // if column found
+            {
+                foreach (KeyValuePair<int, List<String>> entry in this.dict)
+                {
+                    // do something with entry.Value or entry.Key
+                    String NewValueToInsert = ColumnNameToAdd;
+                    if (entry.Key != 0)
+                    {
+                        NewValueToInsert = EmptyCellFiller;
+                    }
+                    entry.Value.Insert(Index+1, NewValueToInsert);
+
+                }
+                Save_File_As_CSV(InputFile);
 
             }
-            Save_File_As_CSV(InputFile);
+            return Index;
+        }
+
+        public String Get_Cell_Content(String InputFile, String ColumnName, int LineNumber)
+        {
+            SetFile(InputFile);
+            return Get_Cell_Content(ColumnName,LineNumber);
         }
 
         // Returns the content of a specific Cell
-        public String Get_Cell_Content(String ColumnName, int LineNumber)
+        private String Get_Cell_Content(String ColumnName, int LineNumber)
         {
             List<String> myListOfColumns = dict[0];
             int ColumnNumber = myListOfColumns.IndexOf(ColumnName);
@@ -192,9 +221,10 @@ namespace CsvLibrary
         }
 
         // Delete an entire Line if a particular cell of a given column matches a regular expression pattern
-        public void Delete_Line_If_Cell_Matches_Pattern(String InputFile, String ColumnName, String RegExPattern)
+        public int Delete_Line_If_Cell_Matches_Pattern(String InputFile, String ColumnName, String RegExPattern)
         {
             SetFile(InputFile);
+            int CntLinesDeleted = 0;
             IDictionary<int, List<String>> NewDict = new Dictionary<int, List<String>>();
             int ColumnIndex = Get_Column_Index(ColumnName);
 
@@ -217,19 +247,22 @@ namespace CsvLibrary
                         }
                         else
                         {
-                            //Console.WriteLine("Match Found, Removing Line.");
+                        //Console.WriteLine("Match Found, Removing Line.");
+                        CntLinesDeleted++;
                         }
                     //Console.ReadKey();
                 }
             }
             this.dict = NewDict;
             Save_File_As_CSV(InputFile);
+            return CntLinesDeleted;
         }
 
 
         // Kepp only Lines that match a regular expression
-        public void Keep_Line_If_Cell_Matches_Pattern(String InputFile, String ColumnName, String RegExPattern)
+        public int Keep_Line_If_Cell_Matches_Pattern(String InputFile, String ColumnName, String RegExPattern)
         {
+            int CntLinesKept = 0;
             SetFile(InputFile);
             IDictionary<int, List<String>> NewDict = new Dictionary<int, List<String>>();
             int ColumnIndex = Get_Column_Index(ColumnName);
@@ -255,20 +288,22 @@ namespace CsvLibrary
                     else
                     {
                         NewDict.Add(entry);
-                       // Console.WriteLine("Match Found, Keeping Line.");
+                        CntLinesKept++;
+                        // Console.WriteLine("Match Found, Keeping Line.");
                     }
                     //Console.ReadKey();
                 }
             }
             this.dict = NewDict;
             Save_File_As_CSV(InputFile);
+            return CntLinesKept;
         }
 
         // Append a string to the content of a Cell IF a certain corresponding Cell in the same column or a different column matches a Regex (ex: if "Description" contains "Credit" then append a "-" to column "Amount")
-        public void Append_If_Column_Matches_Pattern(String InputFile, String ColumnNameToMatch, String RegExPattern, String ColumnNameToModify, String StringToAppend, Boolean AppendAtEnd)
+        public int Append_If_Column_Matches_Pattern(String InputFile, String ColumnNameToMatch, String RegExPattern, String ColumnNameToModify, String StringToAppend, Boolean AppendAtEnd)
         {
             SetFile(InputFile);
- 
+            int CntMods = 0;
             int ColumnIndex = Get_Column_Index(ColumnNameToMatch);
             int ColumnIndexToModify = Get_Column_Index(ColumnNameToModify);
 
@@ -293,10 +328,11 @@ namespace CsvLibrary
                         NewValueCell = StringToAppend + OriginalValueOfCell;
                     }
                     entry.Value[ColumnIndexToModify] = NewValueCell;
+                    CntMods++;
                 }
             }
             Save_File_As_CSV(InputFile);
-           // Console.ReadKey();
+            return CntMods;
         }
 
         // Split Cell Value into other column
@@ -310,6 +346,7 @@ namespace CsvLibrary
                 String ValueToCopy = matches[0].Groups[1].Value;
                // Console.WriteLine("DEBUG: Value Extracted: " + ValueToCopy);
                 Set_Cell_Content(InputFile,TargetColumn, LineNumber, ValueToCopy);
+                Save_File_As_CSV(InputFile);
             }
         }
 
@@ -369,6 +406,33 @@ namespace CsvLibrary
             List<String> myListOfColumns = dict[0];
             int ColumnNumber = myListOfColumns.IndexOf(ProcessedColumnName);
             return ColumnNumber;
+        }
+
+
+        // Returns the total number of columns within the CSV File
+        private int Get_Number_Of_Columns()
+        {
+            return this.dict[0].Count;
+        }
+
+        // Returns the total number of lines within the CSV File (including the header line)
+        private int Get_Number_Of_Lines()
+        {
+            return this.dict.Count;
+        }
+
+        // Returns all the column names in CSV format
+        private String Get_Column_Names()
+        {
+            var result = String.Join(",", dict[0].ToArray());
+            return result;
+        }
+
+        // Returns the content of a line in CSV format
+        private String Get_Line_Content(int LineNumber)
+        {
+            var result = String.Join(",", dict[LineNumber].ToArray());
+            return result;
         }
 
         // Internal function - Save dictionary back to CSV File

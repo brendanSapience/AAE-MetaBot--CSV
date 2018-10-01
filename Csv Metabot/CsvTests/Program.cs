@@ -12,27 +12,73 @@ namespace CsvTests
         static void Main(string[] args)
         {
             CsvUtils utils = new CsvUtils();
-            String FilePath = @"C:\IQBot Input\[7618da06-56f2-45f5-8b89-991f5315c3b8]_0057_486301224 June-2018.pdf.csv";
-           
-            
-            //utils.SetFile();
-            //String myVal = utils.Get_Line_Content(2);
-            //utils.Add_Column_Between("Invoice_Number", "Invoice_Date", "test Columns!","<No Data>");
-           // String CellContent = utils.Get_Cell_Content("Invoice_Date", 3);
+            String FilePath = @"C:\IQBot Input\[ee257c39-1d40-412f-8c96-e8c03df06e42]_0057_486301224 June-2018.pdf.csv";
 
-            //String NewContent1 = utils.Transform_Cell_Content("Item_Description", 3, @".* size (.*)");
-           // utils.Transform_Column_Content("Item_Description", @".* size (\d+).*");
-           
-            utils.Delete_Line_If_Cell_Matches_Pattern(FilePath,"Amount", @"Page.*|Page .*|.*, .*");
-            utils.Append_If_Column_Matches_Pattern(FilePath, "Description", ".*Debit.*", "Amount", "-", false);
-            //utils.Keep_Line_If_Cell_Matches_Pattern(FilePath, "Description", @"((?:Transfer (?:Credit|Debit) (?:B\/O|A\/C)){1}[ ]*:.*(?: Hess){1}.*)|^Cash Concentration.*");
+            // test: get Columns and Lines number
+            int NbColumns = utils.Get_Number_Of_Columns(FilePath);
+            int NbLines = utils.Get_Number_Of_Lines(FilePath);
+            Console.WriteLine("Number of [Columns|Lines]: [" + NbColumns + "|" + NbLines+"]");
 
-            //((?:Book Transfer (?:Credit|Debit) (?:B\/O|A\/C)){1}[ ]*:.*(?: Hess){1}.*)|(Cash Concentration.*)/i
+            // Test: get column names
+            String ColNames = utils.Get_Column_Names(FilePath);
+            Console.WriteLine("Column Names: [" + ColNames + "]");
 
-            // utils.SetFile(@"C:\Users\brendan.sapience\Google Drive\AutomationAnywhere\IQ Bot Output\Output\Z_Output_Post_Processing\Layout1_Train(5)_Hess - Full.csv");
-            //utils.Save_Cell_Value_On_Range(FilePath,"Table_Type", 1, 109, "Deposits and Additions");
-            //Console.WriteLine("Result: " + CellContent + " - ");
-            //
+            // Test: get the content of a specific line
+            String LineContent = utils.Get_Line_Content(FilePath,2);
+            Console.WriteLine("Line Content: [" + LineContent + "]");
+
+            // Test: delete lines where Amount column contains "Page "
+            int NbLinesDeleted = utils.Delete_Line_If_Cell_Matches_Pattern(FilePath,"Amount", @"Page.*|Page .*|.*, .*");
+            Console.WriteLine("Lines Deleted: " + NbLinesDeleted);
+
+            // Test: add a "-" in front of values in column Amount if column Description contains "Debit"
+            int NbCellsMods = utils.Append_If_Column_Matches_Pattern(FilePath, "Description", ".*Debit.*", "Amount", "-", false);
+            Console.WriteLine("Cells modified: " + NbCellsMods);
+
+            // Test: delete column named "Not_Real" (no such column)
+            int idx = utils.Delete_Column(FilePath, "Not_Real");
+            Console.WriteLine("Column Index for Column Not_Real: " + idx);
+
+            // Test: delete column named "Instances"
+            idx = utils.Delete_Column(FilePath, "Instances");
+            Console.WriteLine("Column Index for Column Instances: " + idx);
+
+            // Test: get the index of a particular column
+            idx = utils.Get_Column_Index(FilePath, "Statement_Date");
+            Console.WriteLine("Index for Column Statement_Date: " + idx);
+
+            // Test: insert a new column Before an existing one
+            int IdxColumnBefore = utils.Add_Column_Before(FilePath, "Legal_Entity", "New_Col_1","<Data>");
+            Console.WriteLine("Inserting Before column with index: " + IdxColumnBefore);
+
+            // Test: insert a new column After an existing one
+            int IdxColumnAfter = utils.Add_Column_After(FilePath, "File Path", "New_Col_2", "<Data>");
+            Console.WriteLine("Inserting After column with index: " + IdxColumnAfter);
+
+            // Test: get the content of a cell
+            String CellContent = utils.Get_Cell_Content(FilePath, "Description",1);
+            Console.WriteLine("Cell Content: " + CellContent);
+
+            // Test: Change the content of a cell to the "Match" of a regular expression applied to it: .+ (.*) Trn.*
+            String NewValue = utils.Transform_Cell_Content(FilePath, "Description", 1, ".+ (.*) Trn.*");
+            Console.WriteLine("New Cell Content: " + NewValue);
+
+            // Test: Change the content of a cell
+            utils.Set_Cell_Content(FilePath, "Description", 2, "\"Test, hello?!\"");
+
+            // Test: Change the content of a column to the "Match" of a regular expression applied to it
+            utils.Transform_Column_Content(FilePath, "Legal_Entity", ".*(HESS .*),.*");
+
+            // Test: keep lines where Amount column contains "Page "
+            //int NbLinesKept = utils.Keep_Line_If_Cell_Matches_Pattern(FilePath, "Description", @".*Cash Concentration.*");
+            //Console.WriteLine("Lines Kept: " + NbLinesKept);
+
+            // Test: copy the "Match" from a regular expression to another column (for 1 cell)
+            utils.Copy_Cell_Content_To_Other_Column(FilePath, "Legal_Entity", 2, "HESS (.*) INV.*", "New_Col_2");
+
+            // Test: Change the value of a cell within a range for a given column
+            utils.Save_Cell_Value_On_Range(FilePath, "New_Col_2", 3, 45, "\"New Value, here\"");
+
 
             Console.ReadKey();
         }
