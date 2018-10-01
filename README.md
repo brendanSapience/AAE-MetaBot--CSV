@@ -13,22 +13,29 @@ Go to the mbot delivery folder, download the mbot file and add it to your AA Cli
 AA / CR v10.5+
 
 
-### Available Functions
+### Available Functions (Metabot)
 
 * Get Number of Lines
 * Get Number of Columns
 * Get Column Names
+* Get Column Index
 * Get Line Content
 * Get Cell Content
-* Add Column Between 
-* Transform Cell Content
 * Set Cell Content
-* Transform Column Content
+* Add Column Before
+* Add Column After
+* Delete Column
+* Transform Cell Content with Regex Group Match
+* Transform Column Content with Regex Group Match
 * Delete Line If Cell Matches Pattern
 * Keep Line If Cell matches Pattern
-* Append If Column Matches Pattern
+* Append String If Column Matches Pattern
 * Copy Cell Content to Other Column (based on Regex matches)
 * Save Cell Value On Range
+
+### Documentation
+
+see MS Word document in "Documentation" folder for specifics.
 
 ## Contributing
 
