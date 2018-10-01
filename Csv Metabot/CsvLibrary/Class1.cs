@@ -343,30 +343,36 @@ namespace CsvLibrary
             var matches = Regex.Matches(CellContent, pattern);
             if (matches.Count > 0 && matches[0].Groups.Count > 1)
             {
-                String ValueToCopy = matches[0].Groups[1].Value;
-               // Console.WriteLine("DEBUG: Value Extracted: " + ValueToCopy);
-                Set_Cell_Content(InputFile,TargetColumn, LineNumber, ValueToCopy);
-                Save_File_As_CSV(InputFile);
+                int idx = Get_Column_Index(TargetColumn);
+                if(idx > -1) // If column exists..
+                {
+                    String ValueToCopy = matches[0].Groups[1].Value;
+                    // Console.WriteLine("DEBUG: Value Extracted: " + ValueToCopy);
+                    Set_Cell_Content(InputFile, TargetColumn, LineNumber, ValueToCopy);
+                    Save_File_As_CSV(InputFile);
+                }
+
             }
         }
 
         // Change the value of multiple cells in a column based on Range
-        public void Save_Cell_Value_On_Range(String InputFile, String ColumnName, String LineNumberStartS,String LineNumberEndS, String NewValue)
+        public void Save_Cell_Value_On_Range(String InputFile, String ColumnName, int LineNumberStart,int LineNumberEnd, String NewValue)
         {
-            int LineNumberStart = Int32.Parse(LineNumberStartS);
-            int LineNumberEnd = Int32.Parse(LineNumberEndS);
             SetFile(InputFile);
             int ColumnIndex = Get_Column_Index(ColumnName);
-
-            foreach (KeyValuePair<int, List<String>> entry in this.dict)
+            if(ColumnIndex> -1 && LineNumberStart < LineNumberEnd)
             {
-
-                if (entry.Key >= LineNumberStart && entry.Key <= LineNumberEnd)
+                foreach (KeyValuePair<int, List<String>> entry in this.dict)
                 {
-                    entry.Value[ColumnIndex] = NewValue;
+
+                    if (entry.Key >= LineNumberStart && entry.Key <= LineNumberEnd)
+                    {
+                        entry.Value[ColumnIndex] = NewValue;
+                    }
                 }
+                Save_File_As_CSV(InputFile);
             }
-            Save_File_As_CSV(InputFile);
+
         }
 
         // Internal Function

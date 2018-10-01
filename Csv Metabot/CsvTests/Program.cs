@@ -74,10 +74,10 @@ namespace CsvTests
             //Console.WriteLine("Lines Kept: " + NbLinesKept);
 
             // Test: copy the "Match" from a regular expression to another column (for 1 cell)
-            utils.Copy_Cell_Content_To_Other_Column(FilePath, "Legal_Entity", 2, "HESS (.*) INV.*", "New_Col_2");
+            utils.Copy_Cell_Content_To_Other_Column(FilePath, "Legal_Entity", 2, "HESS (.*) INV.*", "New_col_2");
 
             // Test: Change the value of a cell within a range for a given column
-            utils.Save_Cell_Value_On_Range(FilePath, "New_Col_2", "3", "45", "\"New Value, here\"");
+            utils.Save_Cell_Value_On_Range(FilePath, "New_col_2", 3, 45, "\"New Value, here\"");
 
 
             Console.ReadKey();
