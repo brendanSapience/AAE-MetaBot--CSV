@@ -351,8 +351,10 @@ namespace CsvLibrary
         }
 
         // Change the value of multiple cells in a column based on Range
-        public void Save_Cell_Value_On_Range(String InputFile, String ColumnName, int LineNumberStart,int LineNumberEnd, String NewValue)
+        public void Save_Cell_Value_On_Range(String InputFile, String ColumnName, String LineNumberStartS,String LineNumberEndS, String NewValue)
         {
+            int LineNumberStart = Int32.Parse(LineNumberStartS);
+            int LineNumberEnd = Int32.Parse(LineNumberEndS);
             SetFile(InputFile);
             int ColumnIndex = Get_Column_Index(ColumnName);
 

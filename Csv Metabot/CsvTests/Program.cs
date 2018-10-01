@@ -77,7 +77,7 @@ namespace CsvTests
             utils.Copy_Cell_Content_To_Other_Column(FilePath, "Legal_Entity", 2, "HESS (.*) INV.*", "New_Col_2");
 
             // Test: Change the value of a cell within a range for a given column
-            utils.Save_Cell_Value_On_Range(FilePath, "New_Col_2", 3, 45, "\"New Value, here\"");
+            utils.Save_Cell_Value_On_Range(FilePath, "New_Col_2", "3", "45", "\"New Value, here\"");
 
 
             Console.ReadKey();
