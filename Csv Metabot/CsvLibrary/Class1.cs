@@ -84,6 +84,72 @@ namespace CsvLibrary
 
         }
 
+        public Boolean Enforce_Column_Order(String InputFile, String ColumnOrderTemplate)
+        {
+
+            SetFile(InputFile);
+            String[] ColNames = ColumnOrderTemplate.Split(',');
+            IDictionary<int, List<String>> NewDict = new Dictionary<int, List<String>>();
+            List<string> AllColumnNameFromTemplate = new List<string>();
+            List<int> Order = new List<int>();
+            foreach (String s in ColNames)
+            {
+                AllColumnNameFromTemplate.Add(s.Trim());
+               // Console.WriteLine("Debug, adding:" + s.Trim());
+            }
+            int NumberOfColumnsInParameters = AllColumnNameFromTemplate.Count();
+            int NumberOfColumnsInCsv = Get_Number_Of_Columns();
+
+            if(NumberOfColumnsInParameters != NumberOfColumnsInCsv)
+            {
+                // Number of Columns in parameter passed is different from number of columns in CSV
+                return false;
+            }
+
+            //Console.WriteLine("sdf:" + NumberOfColumnsInParameters + ":" + NumberOfColumnsInCsv);
+            //Console.ReadKey();
+
+            foreach (String Col in AllColumnNameFromTemplate)
+            {
+                Order.Add(Get_Column_Index(Col));
+            }
+
+            foreach (KeyValuePair<int, List<String>> entry in this.dict)
+            {
+
+                List<String> result1 = Order.Select(i => entry.Value[i]).ToList();
+                NewDict.Add(entry.Key, result1);
+
+            }
+            this.dict = NewDict;
+            Save_File_As_CSV(InputFile);
+            return true;
+        }
+
+
+        // Tested - Switch Columns
+        public void Switch_Columns(String InputFile, String ColumnName1, String ColumnName2)
+        {
+            SetFile(InputFile);
+            IDictionary<int, List<String>> NewDict = new Dictionary<int, List<String>>();
+            int ColumnIndex1 = Get_Column_Index(ColumnName1);
+            int ColumnIndex2 = Get_Column_Index(ColumnName2);
+
+            if (ColumnIndex1 > -1 && ColumnIndex2 > -1)
+            {
+                foreach (KeyValuePair<int, List<String>> entry in this.dict)
+                {
+                    String MyLine = Get_Line_Content(entry.Key);
+
+                    Swap(entry.Value, ColumnIndex1, ColumnIndex2);
+
+                   // entry.Value.RemoveAt(ColumnIndex);
+                }
+                Save_File_As_CSV(InputFile);
+            }
+
+        }
+
         public int Get_Number_Of_Columns(String InputFile)
         {
             SetFile(InputFile);
@@ -389,6 +455,13 @@ namespace CsvLibrary
                 }
             }
 
+        }
+
+        public static void Swap(List<String> list, int indexA, int indexB)
+        {
+            String tmp = list[indexA];
+            list[indexA] = list[indexB];
+            list[indexB] = tmp;
         }
 
         // Internal Function

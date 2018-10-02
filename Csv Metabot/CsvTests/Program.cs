@@ -13,7 +13,7 @@ namespace CsvTests
         {
             CsvUtils utils = new CsvUtils();
             String FilePath = @"C:\IQBot Input\[ee257c39-1d40-412f-8c96-e8c03df06e42]_0057_486301224 June-2018.pdf.csv";
-
+            /*
             // test: get Columns and Lines number
             int NbColumns = utils.Get_Number_Of_Columns(FilePath);
             int NbLines = utils.Get_Number_Of_Lines(FilePath);
@@ -79,6 +79,11 @@ namespace CsvTests
             // Test: Change the value of a cell within a range for a given column
             utils.Save_Cell_Value_On_Range(FilePath, "New_col_2", 3, 45, "\"New Value, here\"");
 
+            utils.Switch_Columns(FilePath, "New_Col_1", "New_Col_2");
+            */
+
+            // Force the order of columns and rearrange if necessary
+            utils.Enforce_Column_Order(FilePath, "Description, New_Col_2, New_Col_1, Bank_Name, Statement_Date, Legal_Entity, Account_Number, Beginning_Balance, Deposits_and_Additions, Electronic_Withdrawals, Other_Withdrawals_Fees_and_Charges, Ending_Balance, Checks_Paid, Date, Section_Type, Amount, Result, File Path");
 
             Console.ReadKey();
         }
