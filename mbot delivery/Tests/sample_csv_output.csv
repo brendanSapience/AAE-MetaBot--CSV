@@ -1,0 +1,14 @@
+Invoice_Number,Invoice_Date,Invoice_Total,Vendor_Name,Description,Item_Number,Item_Amount
+1,2/1/2018,5500,A co Ltd,00AA00 Product 1 Credit,1000,500
+1,2/1/2018,5500,A co Ltd,00AA00 Product 2 Debit,1001,300
+1,2/1/2018,5500,A co Ltd,00AA00 Product 3 Credit,1002,400
+1,2/1/2018,5500,A co Ltd,00AA00 Product 4 Credit,1003,100
+1,2/1/2018,5500,A co Ltd,Page 1 of 2,,
+1,2/1/2018,5500,A co Ltd,00AA00 Product 5 Credit,1004,200
+1,2/1/2018,5500,A co Ltd,2018 August,,
+1,2/1/2018,5500,A co Ltd,00AA00 Product 6 Credit,1005,350
+1,2/1/2018,5500,A co Ltd,Some Line To Delete,ABCF,
+1,2/1/2018,5500,A co Ltd,00AA00 Product 7 Debit,1006,250
+1,2/1/2018,5500,A co Ltd,00AA00 Product 8 Credit,1007,600
+1,2/1/2018,5500,A co Ltd,00AA00 Product 9 Credit,1008,445
+1,2/1/2018,5500,A co Ltd,Page 2 of 2,,

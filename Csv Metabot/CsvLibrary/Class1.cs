@@ -421,6 +421,35 @@ namespace CsvLibrary
             }
         }
 
+        // Split Cell Value into other column
+        public void Copy_Column_Content_To_Other_Column(String InputFile, String OriginColumn, String RegexPatternGroupToCopy, String TargetColumn)
+        {
+
+            SetFile(InputFile);
+            int idxTar = Get_Column_Index(TargetColumn);
+            int idxOri = Get_Column_Index(OriginColumn);
+            if (idxTar > -1 && idxOri > -1) // If column exists..
+            {
+                foreach (KeyValuePair<int, List<String>> entry in this.dict)
+                {
+                    if (entry.Key > 0) // preserving column headers
+                    {
+                        String CellContent = Get_Cell_Content(OriginColumn, entry.Key);
+                        var pattern = RegexPatternGroupToCopy;
+                        var matches = Regex.Matches(CellContent, pattern);
+                        if (matches.Count > 0 && matches[0].Groups.Count > 1)
+                        {
+                            String ValueToCopy = matches[0].Groups[1].Value;
+                            Set_Cell_Content(InputFile, TargetColumn, entry.Key, ValueToCopy);
+                        }
+                    }
+                }
+            }
+
+            Save_File_As_CSV(InputFile);
+
+        }
+
         // Change the value of multiple cells in a column based on Range
         public void Save_Cell_Value_On_Range(String InputFile, String ColumnName, int LineNumberStart,int LineNumberEnd, String NewValue)
         {
