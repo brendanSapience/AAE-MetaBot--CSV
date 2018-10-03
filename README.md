@@ -31,6 +31,7 @@ AA / CR v10.5+
 * Keep Line If Cell matches Pattern
 * Append String If Column Matches Pattern
 * Copy Cell Content to Other Column (based on Regex matches)
+* Copy Column Content to Other Column (based on Regex matches)
 * Save Cell Value On Range
 * Swap 2 Columns
 * Enforce Column Order
