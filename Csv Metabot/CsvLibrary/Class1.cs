@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,6 +9,59 @@ using System.Threading.Tasks;
 
 namespace CsvLibrary
 {
+    public class KeyValuePair
+    {
+        public String KeyName;
+        public String Value;
+        public KeyValuePair(String KeyName, String Value)
+        {
+            this.KeyName = KeyName;
+            this.Value = Value;
+        }
+
+    }
+
+    public class KeyValuePairArray
+    {
+        public List<KeyValuePair> listOfItems = new List<KeyValuePair>();
+        public KeyValuePairArray()
+        {
+
+        }
+        public void AddElement(KeyValuePair kvp)
+        {
+            this.listOfItems.Add(kvp);
+        }
+    }
+
+    public class JsonHeaders
+    {
+        public string HeaderName { get; set; }
+        public List<KeyValuePair> AllStdValues { get; set; }
+    }
+
+    public class JsonItems
+    {
+        public string ItemGlobalName { get; set; }
+        public List<KeyValuePairArray> AllItemValues { get; set; }
+    }
+
+    public class JsonRepresentationOfCsv
+    {
+        public JsonHeaders jsonHeaders = new JsonHeaders();
+        public JsonItems jsonItems = new JsonItems();
+
+        public JsonRepresentationOfCsv(String StdName, List<KeyValuePair> StdKVP, String ItemName, List<KeyValuePairArray> ItemKVPA)
+        {
+            this.jsonHeaders.AllStdValues = StdKVP;
+            this.jsonHeaders.HeaderName = StdName;
+            //this.jsonItems.AllItemValues = ItemKVPA;
+            this.jsonItems.ItemGlobalName = ItemName;
+        }
+
+    }
+
+
     public class CsvUtils
     {
         private String FilePath = "";
@@ -244,6 +298,7 @@ namespace CsvLibrary
         // Transforms the content of a specific Cell (by replacing it with a RegEx MATCH from a regular expression)
         public String Transform_Cell_Content(String InputFile, String ColumnName, int LineNumber, String RegExPattern)
         {
+            SetFile(InputFile);
             String MyContent = Get_Cell_Content(ColumnName, LineNumber);
             String NewValue = MyContent;
             var pattern = @RegExPattern;
@@ -260,6 +315,28 @@ namespace CsvLibrary
         public void Set_Cell_Content(String InputFile, String ColumnName, int LineNumber, String NewValue)
         {
             Save_Cell_Value(InputFile, ColumnName, LineNumber, NewValue);
+        }
+
+        // Replace String in Column Content
+        public void Replace_String_In_Column_Content(String InputFile, String ColumnName, String StringToReplace, String Replacement)
+        {
+            SetFile(InputFile);
+            int idx = Get_Column_Index(ColumnName);
+            foreach (KeyValuePair<int, List<String>> entry in this.dict)
+            {
+                if (entry.Key > 0) // dont process the column header line
+                {
+                    
+                    if(idx > -1)
+                    {
+                        String MyContent = Get_Cell_Content(ColumnName, entry.Key);
+                        String NewValue = MyContent.Replace(StringToReplace, Replacement);
+                        Save_Cell_Value_No_Save(ColumnName, entry.Key, NewValue);
+                    }
+
+                }
+            }
+            Save_File_As_CSV(InputFile);
         }
 
         // Transforms the content of an entire column (by replacing it with a RegEx MATCH from a regular expression)
@@ -419,6 +496,142 @@ namespace CsvLibrary
                 }
 
             }
+        }
+
+        public void Rename_Column(String InputFile, String CurrentColumnName, String NewColumnName)
+        {
+            SetFile(InputFile);
+            int idx = Get_Column_Index(CurrentColumnName);
+            if(idx > -1)
+            {
+                foreach (KeyValuePair<int, List<String>> entry in this.dict)
+                {
+                    if (entry.Key == 0)
+                    {
+                        entry.Value[idx] = NewColumnName;
+                    }
+                    Save_File_As_CSV(InputFile);
+                }
+
+            }
+           
+        }
+
+        private List<String> GetAllValuesFromColumn(String ColumnName)
+        {
+            int ColIdx = Get_Column_Index(ColumnName);
+            List<String> AllColumnValue = new List<string>();
+            foreach (KeyValuePair<int, List<String>> entry in this.dict)
+            {
+                AllColumnValue.Add(entry.Value[ColIdx]);
+            }
+            return AllColumnValue;
+
+        }
+
+        private int GetNumberOfDistinctValuesInColumn(String ColumnName)
+        {
+            List<String> AllValues = GetAllValuesFromColumn(ColumnName);
+            List<String> distinct = AllValues.Distinct().ToList();
+            int DisctinctCount = distinct.Count();
+            return DisctinctCount;
+        }
+
+        private String Get_Column_name(int idx)
+        {
+            foreach (KeyValuePair<int, List<String>> entry in this.dict)
+            {
+                if(entry.Key == 0)
+                {
+                    return entry.Value[idx];
+                }
+                
+            }
+            return "";
+        }
+        
+        // the following method is fairly complex and undocumented.. TBD
+        public string Get_Output_As_Json(String InputFile, String TitleForSingleValues, String ListOfColumsOfStandardFields, String TitleForItemValues, String ListOfColumnsOfItemizedFields)
+        {
+            
+            String[] ColumsOfStandardFields = ListOfColumsOfStandardFields.Split(',');
+            String[] ColumnsOfItemizedFields = ListOfColumnsOfItemizedFields.Split(',');
+
+            SetFile(InputFile);
+            List<KeyValuePair> AllKeyValuePairsStdFields = new List<KeyValuePair>();
+            List<KeyValuePairArray> AllKeyValuePairsItemFields = new List<KeyValuePairArray>();
+
+            foreach (String ColName in ColumsOfStandardFields)
+            {
+                List<String> AllVals = GetAllValuesFromColumn(ColName);
+                List<String> distinct = AllVals.Distinct().ToList();
+                KeyValuePair kvp = new KeyValuePair(ColName,distinct[1]);
+                AllKeyValuePairsStdFields.Add(kvp);
+                //Console.Write("Value Std:" + distinct[1]);
+            }
+
+            List<int> ColumnsToExtract = new List<int>();
+            foreach(String ColName in ColumnsOfItemizedFields)
+            {
+                int cIdx = Get_Column_Index(ColName);
+                ColumnsToExtract.Add(cIdx);
+            }
+
+            foreach (KeyValuePair<int, List<String>> entry in this.dict)
+            {
+                
+               // List<String> OneSetofValues = new List<String>();
+                if (entry.Key > 0)
+                {
+                    KeyValuePairArray kvpa = new KeyValuePairArray();
+                    int idx = 0;
+                    foreach (String s in entry.Value)
+                    {
+                        
+                        //var result0 = String.Join(",", ColumnsToExtract.ToArray());
+                        //Console.Write("Debug:" + entry.Value.IndexOf(s) + "|"+ result0);
+                        String ColumnHeader = Get_Column_name(idx);
+                        bool isInList = ColumnsToExtract.IndexOf(idx) != -1;
+                        if (isInList)
+                        {
+                            
+                            KeyValuePair kvp = new KeyValuePair(ColumnHeader,s);
+                            
+                            kvpa.AddElement(kvp);
+                            // OneSetofValues.Add(s);
+                        }
+                        idx++;
+                    }
+                    AllKeyValuePairsItemFields.Add(kvpa);
+                }
+                
+            }
+            
+            String dataString = "{"+"\""+ TitleForSingleValues + "\":{";
+            foreach (KeyValuePair kvp in AllKeyValuePairsStdFields)
+            {
+                dataString = dataString + "\""+ kvp.KeyName + "\":\"" + kvp.Value + "\",";
+            }
+            dataString = dataString.TrimEnd(',');
+            dataString = dataString + "}";
+
+            dataString = dataString + "," + "\""+ TitleForItemValues + "\":[";
+            foreach (KeyValuePairArray kvpa in AllKeyValuePairsItemFields)
+            {
+                dataString = dataString + "{";
+                foreach (KeyValuePair kvp in kvpa.listOfItems)
+                {
+                    dataString = dataString + "\""+kvp.KeyName+"\":"+"\""+kvp.Value+"\",";
+                }
+                dataString = dataString.TrimEnd(',');
+                dataString = dataString + "},";
+            }
+            dataString = dataString.TrimEnd(',');
+            dataString = dataString + "]";
+            // Final Brace
+            dataString = dataString + "}";
+ 
+            return dataString;
         }
 
         // Split Cell Value into other column

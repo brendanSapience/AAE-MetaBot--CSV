@@ -13,7 +13,19 @@ namespace CsvTests
         {
             CsvUtils utils = new CsvUtils();
             String FilePath = @"C:\IQBot Input\sample_csv_output.csv";
-            
+
+            // To Test: Rename Column
+
+            utils.Replace_String_In_Column_Content(FilePath,"Invoice_Date","/","");
+            Console.ReadKey();
+
+            utils.Rename_Column(FilePath, "Description", "Description2");
+            Console.ReadKey();
+
+            String JsonStr = utils.Get_Output_As_Json(FilePath,"SingleValues", "Invoice_Number,Invoice_Date,Invoice_Total,Vendor_Name","Items", "Description,Item_Number,Item_Amount");
+            Console.Write(JsonStr);
+            Console.ReadKey();
+
             // test: get Columns and Lines number
             int NbColumns = utils.Get_Number_Of_Columns(FilePath);
             int NbLines = utils.Get_Number_Of_Lines(FilePath);
