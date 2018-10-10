@@ -40,7 +40,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="CellOperations.cs" />
+    <Compile Include="InternalUtils.cs" />
+    <Compile Include="ColumnOperations.cs" />
+    <Compile Include="KVP.cs" />
+    <Compile Include="LineOperations.cs" />
+    <Compile Include="OutputOperations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
