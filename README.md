@@ -13,7 +13,7 @@ Go to the mbot delivery folder, download the mbot file and add it to your AA Cli
 AA / CR v10.5+
 
 
-### Available Functions (Metabot)
+### Available Functions (Metabot) SP0
 
 * Get Number of Lines
 * Get Number of Columns
@@ -35,6 +35,12 @@ AA / CR v10.5+
 * Save Cell Value On Range
 * Swap 2 Columns
 * Enforce Column Order
+
+### Available Functions (Metabot) SP1
+
+* Rename Column
+* Replace String in Column Content
+* Get CSV as JSON
 
 ### Documentation
 
