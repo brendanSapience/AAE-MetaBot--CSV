@@ -40,6 +40,7 @@ AA / CR v10.5+
 
 * Rename Column
 * Replace String in Column Content
+* Delete String from Column Content
 * Get CSV as JSON
 
 ### Documentation
