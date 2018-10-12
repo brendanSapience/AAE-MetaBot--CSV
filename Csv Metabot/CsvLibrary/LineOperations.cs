@@ -34,34 +34,38 @@ namespace CsvLibrary
             int CntLinesDeleted = 0;
             IDictionary<int, List<String>> NewDict = new Dictionary<int, List<String>>();
             int ColumnIndex = cu.Get_Column_Index(ColumnName);
-
-            foreach (KeyValuePair<int, List<String>> entry in cu.dict)
+            if(ColumnIndex > 0)
             {
-                String MyLine = cu.Get_Line_Content(entry.Key);
-                String CellValueToCheck = entry.Value[ColumnIndex];
+                foreach (KeyValuePair<int, List<String>> entry in cu.dict)
+                {
+                    String MyLine = cu.Get_Line_Content(entry.Key);
+                    String CellValueToCheck = entry.Value[ColumnIndex];
 
-                var pattern = @RegExPattern;
-                var matches = Regex.Matches(CellValueToCheck, pattern);
-                if (entry.Key == 0) // if First Line, then keep it regardless of match or no match
-                {
-                    NewDict.Add(entry);
-                }
-                else
-                {
-                    if (matches.Count == 0)
+                    var pattern = @RegExPattern;
+                    var matches = Regex.Matches(CellValueToCheck, pattern);
+                    if (entry.Key == 0) // if First Line, then keep it regardless of match or no match
                     {
                         NewDict.Add(entry);
                     }
                     else
                     {
-                        //Console.WriteLine("Match Found, Removing Line.");
-                        CntLinesDeleted++;
+                        if (matches.Count == 0)
+                        {
+                            NewDict.Add(entry);
+                        }
+                        else
+                        {
+                            //Console.WriteLine("Match Found, Removing Line.");
+                            CntLinesDeleted++;
+                        }
+                        //Console.ReadKey();
                     }
-                    //Console.ReadKey();
                 }
+                cu.dict = NewDict;
+                cu.Save_File_As_CSV(InputFile);
             }
-            cu.dict = NewDict;
-            cu.Save_File_As_CSV(InputFile);
+
+            
             return CntLinesDeleted;
         }
 
@@ -74,36 +78,40 @@ namespace CsvLibrary
             cu.SetFile(InputFile);
             IDictionary<int, List<String>> NewDict = new Dictionary<int, List<String>>();
             int ColumnIndex = cu.Get_Column_Index(ColumnName);
-
-            foreach (KeyValuePair<int, List<String>> entry in cu.dict)
+            if(ColumnIndex > 0)
             {
-                String MyLine = cu.Get_Line_Content(entry.Key);
-                //Console.WriteLine("Debug Line: " + MyLine);
-                String CellValueToCheck = entry.Value[ColumnIndex];
-                //Console.WriteLine("Checking Value: " + CellValueToCheck + " against Regex: " + @RegExPattern);
-                var pattern = @RegExPattern;
-                var matches = Regex.Matches(CellValueToCheck, pattern);
-                if (entry.Key == 0) // if First Line, then keep it regardless of match or no match
+                foreach (KeyValuePair<int, List<String>> entry in cu.dict)
                 {
-                    NewDict.Add(entry);
-                }
-                else
-                {
-                    if (matches.Count == 0)
+                    String MyLine = cu.Get_Line_Content(entry.Key);
+                    //Console.WriteLine("Debug Line: " + MyLine);
+                    String CellValueToCheck = entry.Value[ColumnIndex];
+                    //Console.WriteLine("Checking Value: " + CellValueToCheck + " against Regex: " + @RegExPattern);
+                    var pattern = @RegExPattern;
+                    var matches = Regex.Matches(CellValueToCheck, pattern);
+                    if (entry.Key == 0) // if First Line, then keep it regardless of match or no match
                     {
-
+                        NewDict.Add(entry);
                     }
                     else
                     {
-                        NewDict.Add(entry);
-                        CntLinesKept++;
-                        // Console.WriteLine("Match Found, Keeping Line.");
+                        if (matches.Count == 0)
+                        {
+
+                        }
+                        else
+                        {
+                            NewDict.Add(entry);
+                            CntLinesKept++;
+                            // Console.WriteLine("Match Found, Keeping Line.");
+                        }
+                        //Console.ReadKey();
                     }
-                    //Console.ReadKey();
                 }
+                cu.dict = NewDict;
+                cu.Save_File_As_CSV(InputFile);
+
             }
-            cu.dict = NewDict;
-            cu.Save_File_As_CSV(InputFile);
+
             return CntLinesKept;
         }
     }
