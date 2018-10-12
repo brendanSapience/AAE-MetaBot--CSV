@@ -34,7 +34,7 @@ namespace CsvLibrary
             int CntLinesDeleted = 0;
             IDictionary<int, List<String>> NewDict = new Dictionary<int, List<String>>();
             int ColumnIndex = cu.Get_Column_Index(ColumnName);
-            if(ColumnIndex > 0)
+            if(ColumnIndex > -1)
             {
                 foreach (KeyValuePair<int, List<String>> entry in cu.dict)
                 {
@@ -78,7 +78,7 @@ namespace CsvLibrary
             cu.SetFile(InputFile);
             IDictionary<int, List<String>> NewDict = new Dictionary<int, List<String>>();
             int ColumnIndex = cu.Get_Column_Index(ColumnName);
-            if(ColumnIndex > 0)
+            if(ColumnIndex > -1)
             {
                 foreach (KeyValuePair<int, List<String>> entry in cu.dict)
                 {

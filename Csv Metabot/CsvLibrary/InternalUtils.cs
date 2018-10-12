@@ -73,12 +73,16 @@ namespace CsvLibrary
         public List<String> GetAllValuesFromColumn(String ColumnName)
         {
             int ColIdx = Get_Column_Index(ColumnName);
-            List<String> AllColumnValue = new List<string>();
-            foreach (KeyValuePair<int, List<String>> entry in this.dict)
+            if (ColIdx > -1)
             {
-                AllColumnValue.Add(entry.Value[ColIdx]);
+                List<String> AllColumnValue = new List<string>();
+                foreach (KeyValuePair<int, List<String>> entry in this.dict)
+                {
+                    AllColumnValue.Add(entry.Value[ColIdx]);
+                }
+                return AllColumnValue;
             }
-            return AllColumnValue;
+            return null;
 
         }
 
@@ -108,23 +112,30 @@ namespace CsvLibrary
         {
             List<String> myListOfColumns = dict[0];
             int ColumnNumber = myListOfColumns.IndexOf(ColumnName);
-            List<String> myListOfValues = dict[LineNumber];
-            return myListOfValues[ColumnNumber];
+            if(ColumnNumber > -1)
+            {
+                List<String> myListOfValues = dict[LineNumber];
+                return myListOfValues[ColumnNumber];
+            }
+            return null;
         }
 
         // Internal Function
         public void Save_Cell_Value_No_Save(String ColumnName, int LineNumber, String NewValue)
         {
             int ColumnIndex = Get_Column_Index(ColumnName);
-
-            foreach (KeyValuePair<int, List<String>> entry in this.dict)
+            if(ColumnIndex > -1)
             {
-
-                if (entry.Key == LineNumber)
+                foreach (KeyValuePair<int, List<String>> entry in this.dict)
                 {
-                    entry.Value[ColumnIndex] = NewValue;
+
+                    if (entry.Key == LineNumber)
+                    {
+                        entry.Value[ColumnIndex] = NewValue;
+                    }
                 }
             }
+
 
         }
 
