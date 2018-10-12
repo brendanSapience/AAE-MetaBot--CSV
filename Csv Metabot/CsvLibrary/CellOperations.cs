@@ -37,25 +37,31 @@ namespace CsvLibrary
             CsvUtils cu = new CsvUtils();
             cu.SetFile(InputFile);
             String CellContent = cu.Get_Cell_Content(OriginColumn, LineNumber);
-            var pattern = RegexPatternGroupToCopy;
-            var matches = Regex.Matches(CellContent, pattern);
-            if (matches.Count > 0 && matches[0].Groups.Count > 1)
+            if (CellContent != null)
             {
-                int idx = cu.Get_Column_Index(TargetColumn);
-                if (idx > -1) // If column exists..
+                var pattern = RegexPatternGroupToCopy;
+                var matches = Regex.Matches(CellContent, pattern);
+                if (matches.Count > 0 && matches[0].Groups.Count > 1)
                 {
-                    String ValueToCopy = matches[0].Groups[1].Value;
-                    // Console.WriteLine("DEBUG: Value Extracted: " + ValueToCopy);
-                    cu.Set_Cell_Content(TargetColumn, LineNumber, ValueToCopy);
-                    cu.Save_File_As_CSV(InputFile);
-                }
-                else
-                {
-                    return false;
-                }
+                    int idx = cu.Get_Column_Index(TargetColumn);
+                    if (idx > -1) // If column exists..
+                    {
+                        String ValueToCopy = matches[0].Groups[1].Value;
+                        // Console.WriteLine("DEBUG: Value Extracted: " + ValueToCopy);
+                        cu.Set_Cell_Content(TargetColumn, LineNumber, ValueToCopy);
+                        cu.Save_File_As_CSV(InputFile);
+                    }
+                    else
+                    {
+                        return false;
+                    }
 
+                }
+                return true;
             }
-            return true;
+            return false;
+
+            
         }
 
         // Transforms the content of a specific Cell (by replacing it with a RegEx MATCH from a regular expression)
@@ -64,16 +70,21 @@ namespace CsvLibrary
             CsvUtils cu = new CsvUtils();
             cu.SetFile(InputFile);
             String MyContent = cu.Get_Cell_Content(ColumnName, LineNumber);
-            String NewValue = MyContent;
-            var pattern = @RegExPattern;
-            var matches = Regex.Matches(MyContent, pattern);
-            if (matches.Count > 0 && matches[0].Groups.Count > 1)
+            if (MyContent != null)
             {
-                NewValue = matches[0].Groups[1].Value;
+                String NewValue = MyContent;
+                var pattern = @RegExPattern;
+                var matches = Regex.Matches(MyContent, pattern);
+                if (matches.Count > 0 && matches[0].Groups.Count > 1)
+                {
+                    NewValue = matches[0].Groups[1].Value;
+                }
+                cu.Set_Cell_Content(ColumnName, LineNumber, NewValue);
+                cu.Save_File_As_CSV(InputFile);
+                return NewValue;
             }
-            cu.Set_Cell_Content(ColumnName, LineNumber, NewValue);
-            cu.Save_File_As_CSV(InputFile);
-            return NewValue;
+            return null;
+
         }
 
         // Change the content of a Cell
