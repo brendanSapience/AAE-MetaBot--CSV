@@ -199,13 +199,21 @@ namespace CsvLibrary
                     if (entry.Key > 0) // preserving column headers
                     {
                         String CellContent = cu.Get_Cell_Content(OriginColumn, entry.Key);
-                        var pattern = RegexPatternGroupToCopy;
-                        var matches = Regex.Matches(CellContent, pattern);
-                        if (matches.Count > 0 && matches[0].Groups.Count > 1)
+                        if(CellContent != null)
                         {
-                            String ValueToCopy = matches[0].Groups[1].Value;
-                            cu.Set_Cell_Content(TargetColumn, entry.Key, ValueToCopy);
+                            var pattern = RegexPatternGroupToCopy;
+                            var matches = Regex.Matches(CellContent, pattern);
+                            if (matches.Count > 0 && matches[0].Groups.Count > 1)
+                            {
+                                String ValueToCopy = matches[0].Groups[1].Value;
+                                cu.Set_Cell_Content(TargetColumn, entry.Key, ValueToCopy);
+                            }
                         }
+                        else
+                        {
+                            return false;
+                        }
+
                     }
                 }
             }
