@@ -34,7 +34,10 @@ namespace CsvTests
             //Console.ReadKey();
 
             co.Replace_String_In_Column_Content(FilePath, "Invoice_Date", "/", "");
-            //Console.ReadKey();
+            Console.ReadKey();
+
+            co.Remove_String_In_Column_Content(FilePath, "Invoice_Date", "20");
+            Console.ReadKey();
 
             co.Rename_Column(FilePath, "Description", "Description2");
             Console.ReadKey();

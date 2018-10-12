@@ -281,6 +281,31 @@ namespace CsvLibrary
             return true;
         }
 
+        // Remove String in Column Content
+        public Boolean Remove_String_In_Column_Content(String InputFile, String ColumnName, String StringToRemove)
+        {
+            CsvUtils cu = new CsvUtils();
+            cu.SetFile(InputFile);
+            int idx = cu.Get_Column_Index(ColumnName);
+            if (idx < 0) { return false; }
+            foreach (KeyValuePair<int, List<String>> entry in cu.dict)
+            {
+                if (entry.Key > 0) // dont process the column header line
+                {
+
+                    if (idx > -1)
+                    {
+                        String MyContent = cu.Get_Cell_Content(ColumnName, entry.Key);
+                        String NewValue = MyContent.Replace(StringToRemove, "");
+                        cu.Save_Cell_Value_No_Save(ColumnName, entry.Key, NewValue);
+                    }
+
+                }
+            }
+            cu.Save_File_As_CSV(InputFile);
+            return true;
+        }
+
         public int Add_Column_After(String InputFile, String ColumnName, String ColumnNameToAdd, String EmptyCellFiller)
         {
             CsvUtils cu = new CsvUtils();
