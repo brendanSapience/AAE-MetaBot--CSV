@@ -32,7 +32,7 @@ namespace CsvLibrary
         }
 
         // Split Cell Value into other column
-        public Boolean Copy_Cell_Content_To_Other_Column(String InputFile, String OriginColumn, int LineNumber, String RegexPatternGroupToCopy, String TargetColumn)
+        public String Copy_Cell_Content_To_Other_Column(String InputFile, String OriginColumn, int LineNumber, String RegexPatternGroupToCopy, String TargetColumn)
         {
             CsvUtils cu = new CsvUtils();
             cu.SetFile(InputFile);
@@ -53,15 +53,20 @@ namespace CsvLibrary
                     }
                     else
                     {
-                        return false;
+                        return "";
                     }
 
                 }
-                return true;
+                else
+                {
+                    return "No Match Found or No Regex Group defined in Regular Expression Pattern";
+                }
+                return "";
             }
-            return false;
-
-            
+            else
+            {
+                return "Cell Content is Null";
+            }
         }
 
         // Transforms the content of a specific Cell (by replacing it with a RegEx MATCH from a regular expression)
@@ -79,6 +84,10 @@ namespace CsvLibrary
                 {
                     NewValue = matches[0].Groups[1].Value;
                 }
+                else
+                {
+                    return "No Match Found or No Regex Group defined in Regular Expression Pattern";
+                }
                 cu.Set_Cell_Content(ColumnName, LineNumber, NewValue);
                 cu.Save_File_As_CSV(InputFile);
                 return NewValue;
@@ -88,12 +97,26 @@ namespace CsvLibrary
         }
 
         // Change the content of a Cell
-        public void Set_Cell_Content(String InputFile, String ColumnName, int LineNumber, String NewValue)
+        public String Set_Cell_Content(String InputFile, String ColumnName, int LineNumber, String NewValue)
         {
             CsvUtils cu = new CsvUtils();
             cu.SetFile(InputFile);
+            int NbOfLines = cu.Get_Number_Of_Lines();
+
+            if(LineNumber > NbOfLines)
+            {
+                return "Line Number exceeds the number of total lines in the input file.";
+            }
+
+            int ColIdx = cu.Get_Column_Index(ColumnName);
+            if(ColIdx < 0)
+            {
+                return "Column Does Not Exist.";
+            }
+
             cu.Set_Cell_Content(ColumnName, LineNumber, NewValue);
             cu.Save_File_As_CSV(InputFile);
+            return "";
         }
 
 

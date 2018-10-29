@@ -32,53 +32,62 @@ namespace CsvLibrary
             {
                 int idx = cu.Get_Column_Index(ColName);
                 if(idx < 0) { return GetErrorJson("Standard Column Not Found: "+ColName); }
-
+                
                 List<String> AllVals = cu.GetAllValuesFromColumn(ColName);
                 List<String> distinct = AllVals.Distinct().ToList();
-                KeyValuePair kvp = new KeyValuePair(ColName, distinct[1]);
+                int nbOfDisctValues = distinct.Count();
+                int index = 0;
+                if(nbOfDisctValues > 1) { index = 1; }
+                KeyValuePair kvp = new KeyValuePair(ColName, distinct[index]);
                 AllKeyValuePairsStdFields.Add(kvp);
                 //Console.Write("Value Std:" + distinct[1]);
             }
 
             List<int> ColumnsToExtract = new List<int>();
-            foreach (String ColName in ColumnsOfItemizedFields)
-            {
-                int idx = cu.Get_Column_Index(ColName);
-                if (idx < 0) { return GetErrorJson("Itemized Column Not Found: " + ColName); }
-                int cIdx = cu.Get_Column_Index(ColName);
-                ColumnsToExtract.Add(cIdx);
-            }
+            Console.Write("Debug:" + ColumnsOfItemizedFields.Count());
 
-            foreach (KeyValuePair<int, List<String>> entry in cu.dict)
+            if (ColumnsOfItemizedFields.Count() > 0 && ColumnsOfItemizedFields[0]!= "")
             {
-
-                // List<String> OneSetofValues = new List<String>();
-                if (entry.Key > 0)
+                foreach (String ColName in ColumnsOfItemizedFields)
                 {
-                    KeyValuePairArray kvpa = new KeyValuePairArray();
-                    int idx = 0;
-                    foreach (String s in entry.Value)
-                    {
-
-                        //var result0 = String.Join(",", ColumnsToExtract.ToArray());
-                        //Console.Write("Debug:" + entry.Value.IndexOf(s) + "|"+ result0);
-                        String ColumnHeader = cu.Get_Column_name(idx);
-                        
-                        bool isInList = ColumnsToExtract.IndexOf(idx) != -1;
-                        if (isInList)
-                        {
-
-                            KeyValuePair kvp = new KeyValuePair(ColumnHeader, s);
-
-                            kvpa.AddElement(kvp);
-                            // OneSetofValues.Add(s);
-                        }
-                        idx++;
-                    }
-                    AllKeyValuePairsItemFields.Add(kvpa);
+                    int idx = cu.Get_Column_Index(ColName);
+                    if (idx < 0) { return GetErrorJson("Itemized Column Not Found: " + ColName); }
+                    int cIdx = cu.Get_Column_Index(ColName);
+                    ColumnsToExtract.Add(cIdx);
                 }
 
+                foreach (KeyValuePair<int, List<String>> entry in cu.dict)
+                {
+
+                    // List<String> OneSetofValues = new List<String>();
+                    if (entry.Key > 0)
+                    {
+                        KeyValuePairArray kvpa = new KeyValuePairArray();
+                        int idx = 0;
+                        foreach (String s in entry.Value)
+                        {
+
+                            //var result0 = String.Join(",", ColumnsToExtract.ToArray());
+                            //Console.Write("Debug:" + entry.Value.IndexOf(s) + "|"+ result0);
+                            String ColumnHeader = cu.Get_Column_name(idx);
+
+                            bool isInList = ColumnsToExtract.IndexOf(idx) != -1;
+                            if (isInList)
+                            {
+
+                                KeyValuePair kvp = new KeyValuePair(ColumnHeader, s);
+
+                                kvpa.AddElement(kvp);
+                                // OneSetofValues.Add(s);
+                            }
+                            idx++;
+                        }
+                        AllKeyValuePairsItemFields.Add(kvpa);
+                    }
+
+                }
             }
+ 
 
             String dataString = "{" + "\"" + TitleForSingleValues + "\":{";
             foreach (KeyValuePair kvp in AllKeyValuePairsStdFields)
@@ -88,19 +97,27 @@ namespace CsvLibrary
             dataString = dataString.TrimEnd(',');
             dataString = dataString + "}";
 
-            dataString = dataString + "," + "\"" + TitleForItemValues + "\":[";
-            foreach (KeyValuePairArray kvpa in AllKeyValuePairsItemFields)
+            
+
+            if(AllKeyValuePairsItemFields.Count() > 0)
             {
-                dataString = dataString + "{";
-                foreach (KeyValuePair kvp in kvpa.listOfItems)
+                dataString = dataString + "," + "\"" + TitleForItemValues + "\":[";
+                foreach (KeyValuePairArray kvpa in AllKeyValuePairsItemFields)
                 {
-                    dataString = dataString + "\"" + kvp.KeyName + "\":" + "\"" + kvp.Value + "\",";
+                    dataString = dataString + "{";
+                    foreach (KeyValuePair kvp in kvpa.listOfItems)
+                    {
+                        dataString = dataString + "\"" + kvp.KeyName + "\":" + "\"" + kvp.Value + "\",";
+                    }
+                    dataString = dataString.TrimEnd(',');
+                    dataString = dataString + "},";
                 }
                 dataString = dataString.TrimEnd(',');
-                dataString = dataString + "},";
+                dataString = dataString + "]";
             }
-            dataString = dataString.TrimEnd(',');
-            dataString = dataString + "]";
+
+
+
             // Final Brace
             dataString = dataString + "}";
 

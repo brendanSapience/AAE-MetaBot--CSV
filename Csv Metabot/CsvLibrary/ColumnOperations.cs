@@ -185,15 +185,17 @@ namespace CsvLibrary
         }
 
         // Split Cell Value into other column
-        public Boolean Copy_Column_Content_To_Other_Column(String InputFile, String OriginColumn, String RegexPatternGroupToCopy, String TargetColumn)
+        public String Copy_Column_Content_To_Other_Column(String InputFile, String OriginColumn, String RegexPatternGroupToCopy, String TargetColumn)
         {
 
             CsvUtils cu = new CsvUtils();
             cu.SetFile(InputFile);
             int idxTar = cu.Get_Column_Index(TargetColumn);
             int idxOri = cu.Get_Column_Index(OriginColumn);
+            int NumberOfMatches = 0;
             if (idxTar > -1 && idxOri > -1) // If column exists..
             {
+                
                 foreach (KeyValuePair<int, List<String>> entry in cu.dict)
                 {
                     if (entry.Key > 0) // preserving column headers
@@ -207,11 +209,13 @@ namespace CsvLibrary
                             {
                                 String ValueToCopy = matches[0].Groups[1].Value;
                                 cu.Set_Cell_Content(TargetColumn, entry.Key, ValueToCopy);
+                                NumberOfMatches++;
                             }
+
                         }
                         else
                         {
-                            return false;
+                            return "Cell Content is Null";
                         }
 
                     }
@@ -219,20 +223,31 @@ namespace CsvLibrary
             }
             else
             {
-                return false;
+                return "At Least 1 Column in parameter does not exist.";
             }
+            if(NumberOfMatches == 0)
+            {
+                return "No Match Found or No Regex Group defined in Regular Expression Pattern";
+            }
+            else
+            {
+                return "Number of Matching Cells Found and moved: "+ NumberOfMatches;
+            }
+            
+
             cu.Save_File_As_CSV(InputFile);
-            return true;
+            return "";
         }
 
 
         // Transforms the content of an entire column (by replacing it with a RegEx MATCH from a regular expression)
-        public Boolean Transform_Column_Content(String InputFile, String ColumnName, String RegExPattern)
+        public String Transform_Column_Content(String InputFile, String ColumnName, String RegExPattern)
         {
             CsvUtils cu = new CsvUtils();
             cu.SetFile(InputFile);
             int colIdx = cu.Get_Column_Index(ColumnName);
-            if(colIdx < 0) { return false; }
+            if(colIdx < 0) { return "Column Does Not Exist."; }
+            int NbOfMatches = 0;
 
             foreach (KeyValuePair<int, List<String>> entry in cu.dict)
             {
@@ -245,6 +260,7 @@ namespace CsvLibrary
                     if (matches.Count > 0 && matches[0].Groups.Count > 1)
                     {
                         NewValue = matches[0].Groups[1].Value;
+                        NbOfMatches++;
                     }
                     else
                     {
@@ -253,7 +269,14 @@ namespace CsvLibrary
                 }
             }
             cu.Save_File_As_CSV(InputFile);
-            return true;
+            if (NbOfMatches == 0)
+            {
+                return "No Match Found or No Regex Group defined in Regular Expression Pattern";
+            }
+            else
+            {
+                return "Number of Matching Cells Found and transformed: " + NbOfMatches;
+            }
         }
 
         // Replace String in Column Content
