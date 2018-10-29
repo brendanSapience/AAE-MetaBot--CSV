@@ -36,26 +36,26 @@ namespace CsvTests
             String Output = "";
 
             // Test: Change the content of a cell to the "Match" of a regular expression applied to it: .+ (.*) Trn.*
-            Output = cop.Transform_Cell_Content(FilePath, "Before", 2, "(test).+");
-            Console.WriteLine("Transforming Cell Content: " + Output);
+            //Output = cop.Transform_Cell_Content(FilePath, "Before", 2, "(test).+");
+            //Console.WriteLine("Transforming Cell Content: " + Output);
 
             // Test: Change the content of a column to the "Match" of a regular expression applied to it
-            Output = co.Transform_Column_Content(FilePath, "Before", "(test).+");
-            Console.WriteLine("Transforming Column Content: "+ Output);
-            Console.ReadKey();
+            //Output = co.Transform_Column_Content(FilePath, "Before", "(test).+");
+            //Console.WriteLine("Transforming Column Content: "+ Output);
+            //Console.ReadKey();
 
             // Test: Change the content of a cell
-            String Msg2 = cop.Set_Cell_Content(FilePath, "one", 2, "\"Test, hello?!\"");
-            Console.Write("Debug:"+Msg2 + "\n");
-            Console.ReadKey();
+           // String Msg2 = cop.Set_Cell_Content(FilePath, "one", 2, "\"Test, hello?!\"");
+           // Console.Write("Debug:"+Msg2 + "\n");
+           // Console.ReadKey();
 
             // Test: copy the "Match" from a regular expression to another column (for 1 cell)
-            String Msg = cop.Copy_Cell_Content_To_Other_Column(FilePath, "Before", 2, ".+", "New");
+            //String Msg = cop.Copy_Cell_Content_To_Other_Column(FilePath, "Before", 2, ".+", "New");
             //co.Copy_Column_Content_To_Other_Column(FilePath, "Description", ".+ (Credit|Debit)", "Desc_Type");
-            Console.WriteLine("Copying content from columns / cells to other columns: "+ Msg);
-            Console.ReadKey();
+            //Console.WriteLine("Copying content from columns / cells to other columns: "+ Msg);
+            //Console.ReadKey();
 
-            String Msg1 = co.Copy_Column_Content_To_Other_Column(FilePath, "Before", ".+", "New");
+            String Msg1 = co.Copy_Column_Content_To_Other_Column(FilePath, "Before", "^(test).+$", "New");
             Console.WriteLine("Copying content from columns / cells to other columns: " + Msg1);
             Console.ReadKey();
 

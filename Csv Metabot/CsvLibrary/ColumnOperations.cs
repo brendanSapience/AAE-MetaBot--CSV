@@ -231,12 +231,9 @@ namespace CsvLibrary
             }
             else
             {
+                cu.Save_File_As_CSV(InputFile);
                 return "Number of Matching Cells Found and moved: "+ NumberOfMatches;
             }
-            
-
-            cu.Save_File_As_CSV(InputFile);
-            return "";
         }
 
 
