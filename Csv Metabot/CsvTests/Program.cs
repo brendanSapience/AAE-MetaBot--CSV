@@ -18,8 +18,11 @@ namespace CsvTests
             CellOperations cop = new CellOperations();
 
             string fileName = "Test.csv";
-            string sourcePath = @"C:\Users\brendan.sapience\Documents\git\AAE-MetaBot--CSV\Documentation\Tests";
-            string targetPath = @"C:\IQBot Input";
+           // string sourcePath = @"C:\Users\brendan.sapience\Documents\git\AAE-MetaBot--CSV\Documentation\Tests";
+           // string targetPath = @"C:\IQBot Input";
+
+            string sourcePath = @"C:\Dev";
+            string targetPath = @"C:\Dev\Output";
 
             // Use Path class to manipulate file and directory paths.
             string sourceFile = System.IO.Path.Combine(sourcePath, fileName);
@@ -29,8 +32,22 @@ namespace CsvTests
 
             String FilePath = targetPath+ @"\"+fileName;
 
-            String JsonStr = oo.Get_Output_As_Json(FilePath,"SingleValues", "Before,one,test,two,four,New", "Items", "");
-            Console.Write(JsonStr+"\n");
+            String Out = cop.Does_Cell_Content_Match_Regex(FilePath, "Billing_Address", 1, @"\b\d{5}\b(?:[-\s]\d{4})?");
+            Console.Write(Out+"\n");
+            Out = cop.Does_Cell_Content_Match_Regex(FilePath, "Billing_Address", 2, @"\b\d{5}\b(?:[-\s]\d{4})?");
+            Console.Write(Out + "\n");
+             Out = cop.Does_Cell_Content_Match_Regex(FilePath, "Billing_Address", 3, @"\b\d{5}\b(?:[-\s]\d{4})?");
+            Console.Write(Out + "\n");
+             Out = cop.Does_Cell_Content_Match_Regex(FilePath, "Billing_Address", 4, @"\b\d{5}\b(?:[-\s]\d{4})?");
+            Console.Write(Out + "\n");
+             Out = cop.Does_Cell_Content_Match_Regex(FilePath, "Billing_Address", 5, @"\b\d{5}\b(?:[-\s]\d{4})?");
+            Console.Write(Out + "\n");
+             Out = cop.Does_Cell_Content_Match_Regex(FilePath, "Billing_Address", 6, @"\b\d{5}\b(?:[-\s]\d{4})?");
+            Console.Write(Out + "\n");
+            Console.ReadKey();
+
+            //String JsonStr = oo.Get_Output_As_Json(FilePath,"SingleValues", "Before,one,test,two,four,New", "Items", "");
+            //Console.Write(JsonStr+"\n");
             //Console.ReadKey();
 
             String Output = "";

@@ -9,7 +9,7 @@ namespace CsvLibrary
 {
     public class CellOperations
     {
-        // Change the value of multiple cells in a column based on Range
+        // Change the value of multiple cells in a column based on Range (Ex: set "USD" in column currency from line 3 to 15)
         public Boolean Save_Cell_Value_On_Range(String InputFile, String ColumnName, int LineNumberStart, int LineNumberEnd, String NewValue)
         {
             CsvUtils cu = new CsvUtils();
@@ -31,7 +31,7 @@ namespace CsvLibrary
             return true;
         }
 
-        // Split Cell Value into other column
+        // Split Cell Value into other column (ex: on line 3 take the content of Column "Currency" ("Currency (USD)") and copy the regex group 1 to column "Clean_Currency") using Regex expression:" Currency \(([A-Z]{3})\)"
         public String Copy_Cell_Content_To_Other_Column(String InputFile, String OriginColumn, int LineNumber, String RegexPatternGroupToCopy, String TargetColumn)
         {
             CsvUtils cu = new CsvUtils();
@@ -103,13 +103,13 @@ namespace CsvLibrary
             cu.SetFile(InputFile);
             int NbOfLines = cu.Get_Number_Of_Lines();
 
-            if(LineNumber > NbOfLines)
+            if (LineNumber > NbOfLines)
             {
                 return "Line Number exceeds the number of total lines in the input file.";
             }
 
             int ColIdx = cu.Get_Column_Index(ColumnName);
-            if(ColIdx < 0)
+            if (ColIdx < 0)
             {
                 return "Column Does Not Exist.";
             }
@@ -126,6 +126,28 @@ namespace CsvLibrary
             cu.SetFile(InputFile);
             return cu.Get_Cell_Content(ColumnName, LineNumber);
         }
+        
+        // Returns Y if a cell in Column A and line 4 matches a regex, otherwise returns N
+        public String Does_Cell_Content_Match_Regex(String InputFile, String ColumnName, int LineNumber, String RegExPattern)
+        {
+            String IsThereMatch = "N";
+            CsvUtils cu = new CsvUtils();
+            cu.SetFile(InputFile);
+            String MyContent = cu.Get_Cell_Content(ColumnName, LineNumber);
+            //Console.Write("Debug:" + MyContent);
+            if (MyContent != null)
+            {
 
+                var pattern = @RegExPattern;
+                var matches = Regex.Matches(MyContent, pattern);
+                if (matches.Count > 0)
+                {
+                    IsThereMatch = "Y";
+                }
+
+
+            }
+            return IsThereMatch;
+        }
     }
 }
