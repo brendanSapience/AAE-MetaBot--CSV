@@ -139,6 +139,24 @@ namespace CsvLibrary
 
         }
 
+        public void Save_Cell_Value_No_Save(int ColumnIndex, int LineNumber, String NewValue)
+        {
+            
+            if (ColumnIndex > -1)
+            {
+                foreach (KeyValuePair<int, List<String>> entry in this.dict)
+                {
+
+                    if (entry.Key == LineNumber)
+                    {
+                        entry.Value[ColumnIndex] = NewValue;
+                    }
+                }
+            }
+
+
+        }
+
         public void Swap(List<String> list, int indexA, int indexB)
         {
             String tmp = list[indexA];

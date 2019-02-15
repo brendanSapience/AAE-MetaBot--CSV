@@ -16,13 +16,23 @@ namespace CsvTests
             OutputOperations oo = new OutputOperations();
             LineOperations lo = new LineOperations();
             CellOperations cop = new CellOperations();
+            AddressOperations aop = new AddressOperations();
 
-            string fileName = "Test.csv";
+           
+
+/*
+           String res =  aop.Process_Address_US("ASURION Attention: RITA SWEENEY PO Box 209348 Austin, TX 78720-9348");
+            String res1 = aop.Process_Address_US("818 lexington ave, apt 6A, Brooklyn, NY 11221");
+            Console.Write(res + "\n");
+            Console.Write(res1 + "\n");
+            Console.ReadKey();
+            */
+            string fileName = "simple_test.csv";
            // string sourcePath = @"C:\Users\brendan.sapience\Documents\git\AAE-MetaBot--CSV\Documentation\Tests";
            // string targetPath = @"C:\IQBot Input";
 
-            string sourcePath = @"C:\Dev";
-            string targetPath = @"C:\Dev\Output";
+            string sourcePath = @"C:\Dev2";
+            string targetPath = @"C:\Dev2\Output";
 
             // Use Path class to manipulate file and directory paths.
             string sourceFile = System.IO.Path.Combine(sourcePath, fileName);
@@ -31,6 +41,10 @@ namespace CsvTests
             System.IO.File.Copy(sourceFile, destFile, true);
 
             String FilePath = targetPath+ @"\"+fileName;
+
+            co.Split_Column_Content_based_on_matches(FilePath, "Invoice_Total", @"\d*,*\d+.\d+", "Invoice_Total","Subtotal_");
+            
+            Console.ReadKey();
 
             String Out = cop.Does_Cell_Content_Match_Regex(FilePath, "Billing_Address", 1, @"\b\d{5}\b(?:[-\s]\d{4})?");
             Console.Write(Out+"\n");

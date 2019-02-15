@@ -326,6 +326,90 @@ namespace CsvLibrary
             return true;
         }
 
+        // Transforms the content of an entire column (by replacing it with a RegEx MATCH from a regular expression)
+        public String Split_Column_Content_based_on_matches(String InputFile, String ColumnNameToRead, String RegExPattern, String InsertAfterColumnName, String ColumnNameStub)
+        {
+
+//Check the number of matches for each Row and retrieve the Max number(N)
+//Create N columns after “Insert After Column” named “Col_1”, “Col_2”, etc.
+//For each row, split it into the proper number of elements
+
+
+            CsvUtils cu = new CsvUtils();
+            cu.SetFile(InputFile);
+            int colIdx = cu.Get_Column_Index(ColumnNameToRead);
+            if (colIdx < 0) { return "Column Does Not Exist."; }
+            int MaxNumberOfMatches = 0;
+
+            foreach (KeyValuePair<int, List<String>> entry in cu.dict)
+            {
+                if (entry.Key > 0) // dont process the column header line
+                {
+                    String MyContent = cu.Get_Cell_Content(ColumnNameToRead, entry.Key);
+                    String NewValue = MyContent;
+                    var pattern = @RegExPattern;
+                    var matches = Regex.Matches(MyContent, pattern);
+                    int NumOfMatches = matches.Count;
+                    if (NumOfMatches > MaxNumberOfMatches) { MaxNumberOfMatches = NumOfMatches; }
+                }
+            }
+            //Console.WriteLine("Debug: Max Number of Matches" + MaxNumberOfMatches);
+            
+            for(int i = 0;i< MaxNumberOfMatches; i++)
+            {
+                int tempIdx = MaxNumberOfMatches - i;
+                //icolIdx = MaxNumberOfMatches - i;
+                Add_Column_After(cu, ColumnNameToRead, ColumnNameStub + tempIdx, "");
+            }
+
+            foreach (KeyValuePair<int, List<String>> entry in cu.dict)
+            {
+                if (entry.Key > 0) // dont process the column header line
+                {
+                    String MyContent = cu.Get_Cell_Content(ColumnNameToRead, entry.Key);
+                    
+                    var matches = Regex.Matches(MyContent, RegExPattern);
+                    int NumOfMatches = matches.Count;
+                    int idxMatch = 0;
+                    foreach (Match match in matches)
+                    {
+                        idxMatch++;
+                       // Console.WriteLine("Match Number:" + idxMatch + ":" + match.Value);
+                        entry.Value[colIdx+idxMatch] = match.Value;
+                    }
+                }
+            }
+
+
+            cu.Save_File_As_CSV(InputFile);
+            return "";
+
+        }
+
+        private void Add_Column_After(CsvUtils cu, String ColumnName, String ColumnNameToAdd, String EmptyCellFiller)
+        {
+            int Index = cu.Get_Column_Index(ColumnName);
+            if (Index > -1) // if column found
+            {
+                foreach (KeyValuePair<int, List<String>> entry in cu.dict)
+                {
+                    // do something with entry.Value or entry.Key
+                    String NewValueToInsert = ColumnNameToAdd;
+                    if (entry.Key != 0)
+                    {
+                        NewValueToInsert = EmptyCellFiller;
+                    }
+                    
+                    entry.Value.Insert(Index + 1, NewValueToInsert);
+
+                }
+                
+
+            }
+            
+
+        }
+
         public int Add_Column_After(String InputFile, String ColumnName, String ColumnNameToAdd, String EmptyCellFiller)
         {
             CsvUtils cu = new CsvUtils();

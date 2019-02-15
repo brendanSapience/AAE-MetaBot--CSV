@@ -44,6 +44,7 @@
     <Compile Include="InternalUtils.cs" />
     <Compile Include="ColumnOperations.cs" />
     <Compile Include="KVP.cs" />
+    <Compile Include="AddressOperations.cs" />
     <Compile Include="LineOperations.cs" />
     <Compile Include="OutputOperations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
