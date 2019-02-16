@@ -42,6 +42,7 @@ AA / CR v10.5+
 * Replace String in Column Content
 * Delete String from Column Content
 * Get CSV as JSON
+* Split Column Content to New Columns
 
 ### Documentation
 
