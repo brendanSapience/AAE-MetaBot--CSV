@@ -374,8 +374,19 @@ namespace CsvLibrary
                     foreach (Match match in matches)
                     {
                         idxMatch++;
-                       // Console.WriteLine("Match Number:" + idxMatch + ":" + match.Value);
-                        entry.Value[colIdx+idxMatch] = match.Value;
+                        // Console.WriteLine("Match Number:" + idxMatch + ":" + match.Value);
+                        String CurrentCellValue = match.Value;
+                       // Console.WriteLine("Debug: " + CurrentCellValue);
+                       if (CurrentCellValue.Contains(','))
+                        {
+                            //Console.WriteLine("Quote detected");
+                            entry.Value[colIdx + idxMatch] = "\"" + CurrentCellValue + "\"";
+                        }
+                        else
+                        {
+                            entry.Value[colIdx + idxMatch] = match.Value;
+                        }
+                        
                     }
                 }
             }
