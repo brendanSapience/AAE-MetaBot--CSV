@@ -27,7 +27,7 @@ namespace CsvTests
             Console.Write(res1 + "\n");
             Console.ReadKey();
             */
-            string fileName = "simple_test.csv";
+            string fileName = "simple_test2.csv";
            // string sourcePath = @"C:\Users\brendan.sapience\Documents\git\AAE-MetaBot--CSV\Documentation\Tests";
            // string targetPath = @"C:\IQBot Input";
 
@@ -42,7 +42,7 @@ namespace CsvTests
 
             String FilePath = targetPath+ @"\"+fileName;
 
-            co.Split_Column_Content_based_on_matches(FilePath, "Invoice_Total", @"\d*,*\d+.\d+", "Invoice_Total","Subtotal_");
+            co.Split_Column_Content_based_on_matches(FilePath, "Total", @"\d*,*\d+.\d+", "Total","Subtotal_");
             
             Console.ReadKey();
 
