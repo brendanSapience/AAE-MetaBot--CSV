@@ -17,7 +17,7 @@ namespace CsvTests
             LineOperations lo = new LineOperations();
             CellOperations cop = new CellOperations();
             AddressOperations aop = new AddressOperations();
-
+            StringOperations sop = new StringOperations();
 
 
             String Res2 = "CHIPPEWA CAPITAL, LLC PO Box 671206 Detroit, Ml48267-1206 USA";
@@ -29,10 +29,14 @@ namespace CsvTests
             String Res8 = "8443 Solution Center Chicago, IL 60677-8004";
             String Res9 = "8443 Solution Center Chicago, IL 60677 - 8004";
 
-           // String res =  aop.Process_Address_US("ASURION Attention: RITA SWEENEY PO Box 209348 Austin, TX 78720-9348");
+            // String res =  aop.Process_Address_US("ASURION Attention: RITA SWEENEY PO Box 209348 Austin, TX 78720-9348");
             //String res0 = aop.Process_Address_US("818 lexington ave, apt 6A, Brooklyn, NY 11221");
             //String res1 = aop.Process_Address_US("119 Mott St, Apt 4, NY, 10013");
-            
+
+            int Test = sop.GetDamerauLevenshteinDistance("Hello1g", "Hello!");
+            Console.WriteLine("String Distance: " + Test);
+            //Console.ReadKey();
+
             Console.Write(aop.Process_Address_US(Res2) + "\n");
             Console.Write(aop.Process_Address_US(Res3) + "\n");
             Console.Write(aop.Process_Address_US(Res4) + "\n");

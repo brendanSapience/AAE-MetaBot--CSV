@@ -9,6 +9,8 @@ namespace CsvLibrary
 {
     public class AddressOperations
     {
+
+
         String REGEX_US_ZIPCODE = @".*(\d{5}-\d{4}|\d{5}).*";
         String REGEX_US_STATES = @"[,| ]+(?:(A[KLRZ]|C[AOT]|D[CE]|FL|GA|HI|I[ADLN]|K[SY]|LA|M[ADEINOST]|N[CDEHJMVY]|O[HKR]|P[AR]|RI|S[CD]|T[NX]|UT|V[AIT]|W[AIVY]))[ |,]+";
         String REGEX_US_POBOX = @"[ ]+([Pp][.]*[Oo][.]*[ ]+[Bb][Oo][Xx][ ]*(\d+[ ]*\d)*)[ |$]+";
@@ -34,12 +36,12 @@ namespace CsvLibrary
         }
         public String Process_Address_US(String RawAddress)
         {
-            String ZIPCODE = "";
-            String STATE = "";
-            String POBOX = "";
-            String NUMBER = "";
-            String STREET = "";
-            String CITY = "";
+            String ZIPCODE = " ";
+            String STATE = " ";
+            String POBOX = " ";
+            String NUMBER = " ";
+            String STREET = " ";
+            String CITY = " ";
 
             RawAddress = RawAddress.Replace("_","").Replace(" - ","-");
             String RawAddressP1 = RawAddress;

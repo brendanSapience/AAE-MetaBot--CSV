@@ -9,6 +9,8 @@ namespace CsvLibrary
 {
     public class CellOperations
     {
+
+        
         // Change the value of multiple cells in a column based on Range (Ex: set "USD" in column currency from line 3 to 15)
         public Boolean Save_Cell_Value_On_Range(String InputFile, String ColumnName, int LineNumberStart, int LineNumberEnd, String NewValue)
         {

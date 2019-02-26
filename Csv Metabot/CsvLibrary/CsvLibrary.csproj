@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="StringOperations.cs" />
     <Compile Include="CellOperations.cs" />
     <Compile Include="InternalUtils.cs" />
     <Compile Include="ColumnOperations.cs" />
