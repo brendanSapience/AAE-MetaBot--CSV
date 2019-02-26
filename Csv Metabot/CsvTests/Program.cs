@@ -20,13 +20,15 @@ namespace CsvTests
 
            
 
-/*
+
            String res =  aop.Process_Address_US("ASURION Attention: RITA SWEENEY PO Box 209348 Austin, TX 78720-9348");
-            String res1 = aop.Process_Address_US("818 lexington ave, apt 6A, Brooklyn, NY 11221");
+            String res0 = aop.Process_Address_US("818 lexington ave, apt 6A, Brooklyn, NY 11221");
+            String res1 = aop.Process_Address_US("119 Mott St, Apt 4, NY, 10013");
+            
             Console.Write(res + "\n");
             Console.Write(res1 + "\n");
             Console.ReadKey();
-            */
+            
             string fileName = "simple_test2.csv";
            // string sourcePath = @"C:\Users\brendan.sapience\Documents\git\AAE-MetaBot--CSV\Documentation\Tests";
            // string targetPath = @"C:\IQBot Input";
@@ -42,8 +44,9 @@ namespace CsvTests
 
             String FilePath = targetPath+ @"\"+fileName;
 
-            co.Split_Column_Content_based_on_matches(FilePath, "Total", @"\d*,*\d+.\d+", "Total","Subtotal_");
-            
+            String OutputStr = co.Split_Column_Content_based_on_matches(FilePath, "Total", @"\d*,*\d+.\d+", "Total","Subtotal_");
+
+            Console.Write(OutputStr);
             Console.ReadKey();
 
             String Out = cop.Does_Cell_Content_Match_Regex(FilePath, "Billing_Address", 1, @"\b\d{5}\b(?:[-\s]\d{4})?");

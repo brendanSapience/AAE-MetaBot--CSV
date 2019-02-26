@@ -10,7 +10,7 @@ namespace CsvLibrary
     public class AddressOperations
     {
         String REGEX_US_ZIPCODE = @".*(\d{5}-\d{4}|\d{5}).*";
-        String REGEX_US_STATES = @"[ ]+(?:(A[KLRZ]|C[AOT]|D[CE]|FL|GA|HI|I[ADLN]|K[SY]|LA|M[ADEINOST]|N[CDEHJMVY]|O[HKR]|P[AR]|RI|S[CD]|T[NX]|UT|V[AIT]|W[AIVY]))[ |$]+";
+        String REGEX_US_STATES = @"(?:(A[KLRZ]|C[AOT]|D[CE]|FL|GA|HI|I[ADLN]|K[SY]|LA|M[ADEINOST]|N[CDEHJMVY]|O[HKR]|P[AR]|RI|S[CD]|T[NX]|UT|V[AIT]|W[AIVY]))";
         String REGEX_US_POBOX = @"[ ]+([Pp][Oo][ ]+[Bb][Oo][Xx][ ]*\d+[ ]*\d*)[ |$]+";
         //https://pe.usps.com/text/pub28/28apc_002.htm
         String REGEX_US_STREET = @"(?: |^)(\d+)[ ]+([A-Z]+[ ]+(?:parkway|field|fld|dr|drive|cir|circle|crcl|blvd|boul|boulevard|ave|av|alley|ally|avenue|av|street|st|ln|lane)).*";
@@ -38,19 +38,22 @@ namespace CsvLibrary
             String NUMBER = "";
             String STREET = "";
 
+            String RawAddressP1 = RawAddress;
             var matches = Regex.Matches(RawAddress, REGEX_US_ZIPCODE);
             if (matches.Count > 0 && matches[0].Groups.Count > 1)
                 {
                     ZIPCODE = matches[0].Groups[1].Value;
-                }
+                    RawAddressP1 = RawAddress.Replace(ZIPCODE, "");
+            }
 
-            matches = Regex.Matches(RawAddress, REGEX_US_STATES);
+            matches = Regex.Matches(RawAddressP1, REGEX_US_STATES);
             if (matches.Count > 0 && matches[0].Groups.Count > 1)
             {
                 STATE = matches[0].Groups[1].Value;
+                RawAddressP1 = RawAddressP1.Replace(STATE, "");
             }
 
-            String RawAddressP1 = RawAddress.Replace(ZIPCODE, "").Replace(STATE, "");
+            //RawAddressP1 = RawAddress.Replace(ZIPCODE, "").Replace(STATE, "");
             String RawAddressP2 = RawAddressP1;
 
             matches = Regex.Matches(RawAddressP1, REGEX_US_POBOX);
@@ -61,20 +64,20 @@ namespace CsvLibrary
             }
 
             String RawAddressP3 = RawAddressP2;
-            Console.WriteLine("LEFT: "+RawAddressP2);
+            //Console.WriteLine("LEFT: "+RawAddressP2);
            // Regex r = new Regex(REGEX_US_STREETRegexOptions.IgnoreCase);
             matches = Regex.Matches(RawAddressP2, REGEX_US_STREET,RegexOptions.IgnoreCase);
             if (matches.Count > 0 && matches[0].Groups.Count > 2)
             {
-                Console.WriteLine("Debug:" + matches[0].Groups[1].Value);
+               // Console.WriteLine("Debug:" + matches[0].Groups[1].Value);
                 NUMBER = matches[0].Groups[1].Value;
                 STREET = matches[0].Groups[2].Value;
                 RawAddressP3 = RawAddressP2.Replace(STREET, "").Replace(NUMBER,"");
             }
 
-            Console.WriteLine(RawAddressP3);
+            //Console.WriteLine(RawAddressP3);
 
-            return ZIPCODE+":"+STATE+":"+POBOX+":"+NUMBER+":"+STREET;
+            return ZIPCODE+"|"+STATE+"|"+ NUMBER + "|" + STREET + "|"+ POBOX;
         }
     }
         
