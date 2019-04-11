@@ -327,6 +327,81 @@ namespace CsvLibrary
         }
 
         // Transforms the content of an entire column (by replacing it with a RegEx MATCH from a regular expression)
+        public String Split_Column_Content_based_on_group_matches(String InputFile, String ColumnNameToRead, String RegExPattern, String InsertAfterColumnName, String ColumnNameStub)
+        {
+
+            //Check the number of matches for each Row and retrieve the Max number(N)
+            //Create N columns after “Insert After Column” named “Col_1”, “Col_2”, etc.
+            //For each row, split it into the proper number of elements
+
+
+            CsvUtils cu = new CsvUtils();
+            cu.SetFile(InputFile);
+            int colIdx = cu.Get_Column_Index(ColumnNameToRead);
+            if (colIdx < 0) { return "Column Does Not Exist."; }
+            int MaxNumberOfGroups = 0;
+
+
+            foreach (KeyValuePair<int, List<String>> entry in cu.dict)
+            {
+                if (entry.Key > 0) // dont process the column header line
+                {
+                    String MyContent = cu.Get_Cell_Content(ColumnNameToRead, entry.Key);
+                    String NewValue = MyContent;
+                    var pattern = @RegExPattern;
+                    var matches = Regex.Matches(MyContent, pattern);
+                    int NumOfGroups = matches[0].Groups.Count;
+                    if (NumOfGroups > MaxNumberOfGroups) { MaxNumberOfGroups = NumOfGroups; }
+                }
+            }
+            //Console.WriteLine("Debug: Max Number of Matches" + MaxNumberOfMatches);
+
+            for (int i = 0; i < MaxNumberOfGroups; i++)
+            {
+                int tempIdx = MaxNumberOfGroups - i;
+                //icolIdx = MaxNumberOfMatches - i;
+                Add_Column_After(cu, ColumnNameToRead, ColumnNameStub + tempIdx, "");
+            }
+
+            foreach (KeyValuePair<int, List<String>> entry in cu.dict)
+            {
+                if (entry.Key > 0) // dont process the column header line
+                {
+                    String MyContent = cu.Get_Cell_Content(ColumnNameToRead, entry.Key);
+
+                    var matches = Regex.Matches(MyContent, RegExPattern);
+                    int NumOfGroups = matches[0].Groups.Count;
+                    int idxGrp = 0;
+                    foreach (Group group in matches[0].Groups)
+                    {
+                        idxGrp++;
+                        if (idxGrp > 1)
+                        {
+                            //Console.WriteLine("Group Number:" + idxGrp + ":" + group.Value);
+                            String CurrentCellValue = group.Value;
+                            //Console.WriteLine("Debug: " + CurrentCellValue);
+                            if (CurrentCellValue.Contains(','))
+                            {
+                               // Console.WriteLine("Quote detected");
+                                entry.Value[colIdx + idxGrp] = "\"" + CurrentCellValue + "\"";
+                            }
+                            else
+                            {
+                                entry.Value[colIdx + idxGrp] = group.Value;
+                            }
+                        }
+
+                    }
+                }
+            }
+
+
+            cu.Save_File_As_CSV(InputFile);
+            return "";
+
+        }
+
+        // Transforms the content of an entire column (by replacing it with a RegEx MATCH from a regular expression)
         public String Split_Column_Content_based_on_matches(String InputFile, String ColumnNameToRead, String RegExPattern, String InsertAfterColumnName, String ColumnNameStub)
         {
 

@@ -33,26 +33,26 @@ namespace CsvTests
             //String res0 = aop.Process_Address_US("818 lexington ave, apt 6A, Brooklyn, NY 11221");
             //String res1 = aop.Process_Address_US("119 Mott St, Apt 4, NY, 10013");
 
-            int Test = sop.GetDamerauLevenshteinDistance("Hello1g", "Hello!");
-            Console.WriteLine("String Distance: " + Test);
+            //int Test = sop.GetDamerauLevenshteinDistance("Hello1g", "Hello!");
+            //Console.WriteLine("String Distance: " + Test);
             //Console.ReadKey();
 
-            Console.Write(aop.Process_Address_US(Res2) + "\n");
-            Console.Write(aop.Process_Address_US(Res3) + "\n");
-            Console.Write(aop.Process_Address_US(Res4) + "\n");
-            Console.Write(aop.Process_Address_US(Res5) + "\n");
-            Console.Write(aop.Process_Address_US(Res6) + "\n");
-            Console.Write(aop.Process_Address_US(Res7) + "\n");
-            Console.Write(aop.Process_Address_US(Res8) + "\n");
-            Console.Write(aop.Process_Address_US(Res9) + "\n");
-            Console.ReadKey();
+           // Console.Write(aop.Process_Address_US(Res2) + "\n");
+            //Console.Write(aop.Process_Address_US(Res3) + "\n");
+            //Console.Write(aop.Process_Address_US(Res4) + "\n");
+            //Console.Write(aop.Process_Address_US(Res5) + "\n");
+            //Console.Write(aop.Process_Address_US(Res6) + "\n");
+            //Console.Write(aop.Process_Address_US(Res7) + "\n");
+            //Console.Write(aop.Process_Address_US(Res8) + "\n");
+            //Console.Write(aop.Process_Address_US(Res9) + "\n");
+            //Console.ReadKey();
             
-            string fileName = "simple_test2.csv";
+            string fileName = "data.csv";
            // string sourcePath = @"C:\Users\brendan.sapience\Documents\git\AAE-MetaBot--CSV\Documentation\Tests";
            // string targetPath = @"C:\IQBot Input";
 
-            string sourcePath = @"C:\Dev2";
-            string targetPath = @"C:\Dev2\Output";
+            string sourcePath = @"C:\Dev3";
+            string targetPath = @"C:\Dev3\Output";
 
             // Use Path class to manipulate file and directory paths.
             string sourceFile = System.IO.Path.Combine(sourcePath, fileName);
@@ -62,7 +62,11 @@ namespace CsvTests
 
             String FilePath = targetPath+ @"\"+fileName;
 
-            String OutputStr = co.Split_Column_Content_based_on_matches(FilePath, "Total", @"\d*,*\d+.\d+", "Total","Subtotal_");
+
+            String OutputStr = co.Split_Column_Content_based_on_group_matches(FilePath, "NovaConta1", @"([A-Za-z]+)\s([A-Za-z]+)\s(\d+)\s([A-Z]+\s+\d+)\s(\d+)\s(\d+)\s(\d+,\d+)\s(.+?)\s(\d+.\d+,\d+)\s+(.+?\s+\d+)\sValor da Parcela (.*?) Nome (.*GB)\s(.*)\s(R.*)", "NovaConta6", "Conta1SUB");
+
+
+            //String OutputStr = co.Split_Column_Content_based_on_matches(FilePath, "Total", @"\d*,*\d+.\d+", "Total","Subtotal_");
 
             Console.Write(OutputStr);
             Console.ReadKey();
