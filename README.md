@@ -42,7 +42,8 @@ AA / CR v10.5+
 * Replace String in Column Content
 * Delete String from Column Content
 * Get CSV as JSON
-* Split Column Content to New Columns
+* Split Column Content to New Columns (Based on Regex Matches)
+* Split Column Content to New Columns (Based on Regex Groups)
 
 ### Documentation
 
