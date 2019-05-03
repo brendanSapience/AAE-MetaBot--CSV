@@ -1,0 +1,5 @@
+﻿Invoice_Number,Invoice_Total,Item_Amount,Item_Description,Item_Code
+INV01234,100.00,4,Desc 1,A1
+INV01234,100.00,5,Desc 2,A2
+INV01234,100.00,20,Desc 3,A3
+INV01234,100.00,45,Desc 4,A4

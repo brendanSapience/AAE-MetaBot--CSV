@@ -47,12 +47,12 @@ namespace CsvTests
             //Console.Write(aop.Process_Address_US(Res9) + "\n");
             //Console.ReadKey();
             
-            string fileName = "data.csv";
+            string fileName = "Samsung_IQBotExtractedData.csv";
            // string sourcePath = @"C:\Users\brendan.sapience\Documents\git\AAE-MetaBot--CSV\Documentation\Tests";
            // string targetPath = @"C:\IQBot Input";
 
-            string sourcePath = @"C:\Dev3";
-            string targetPath = @"C:\Dev3\Output";
+            string sourcePath = @"C:\dev_csv";
+            string targetPath = @"C:\dev_csv\Output";
 
             // Use Path class to manipulate file and directory paths.
             string sourceFile = System.IO.Path.Combine(sourcePath, fileName);
@@ -62,6 +62,11 @@ namespace CsvTests
 
             String FilePath = targetPath+ @"\"+fileName;
 
+
+
+            co.Split_Column_Content_into_rows_based_on_matches(FilePath, "Product detail", @"([A-Z]{2}.{10}EE)", 1);
+            co.Delete_Row(FilePath, 1);
+            Console.ReadKey();
 
             String OutputStr = co.Split_Column_Content_based_on_group_matches(FilePath, "NovaConta1", @"([A-Za-z]+)\s([A-Za-z]+)\s(\d+)\s([A-Z]+\s+\d+)\s(\d+)\s(\d+)\s(\d+,\d+)\s(.+?)\s(\d+.\d+,\d+)\s+(.+?\s+\d+)\sValor da Parcela (.*?) Nome (.*GB)\s(.*)\s(R.*)", "NovaConta6", "Conta1SUB");
 

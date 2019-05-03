@@ -11,6 +11,7 @@ namespace CsvLibrary
     public class ColumnOperations
     {
 
+        // Get all column names (as CSV)
         public String Get_Column_Names(String InputFile)
         {
             CsvUtils cu = new CsvUtils();
@@ -98,6 +99,7 @@ namespace CsvLibrary
             return CntMods;
         }
 
+        // Get the Column Number based on the Column Name
         public int Get_Column_Index(String InputFile, String ColumnName)
         {
             CsvUtils cu = new CsvUtils();
@@ -105,6 +107,7 @@ namespace CsvLibrary
             return cu.Get_Column_Index(ColumnName);
         }
 
+        // get the total number of columns
         public int Get_Number_Of_Columns(String InputFile)
         {
             CsvUtils cu = new CsvUtils();
@@ -112,6 +115,7 @@ namespace CsvLibrary
             return cu.Get_Number_Of_Columns();
         }
 
+        // Rearranges columns to enforce a particular order
         public Boolean Enforce_Column_Order(String InputFile, String ColumnOrderTemplate)
         {
             CsvUtils cu = new CsvUtils();
@@ -405,10 +409,9 @@ namespace CsvLibrary
         public String Split_Column_Content_based_on_matches(String InputFile, String ColumnNameToRead, String RegExPattern, String InsertAfterColumnName, String ColumnNameStub)
         {
 
-//Check the number of matches for each Row and retrieve the Max number(N)
-//Create N columns after “Insert After Column” named “Col_1”, “Col_2”, etc.
-//For each row, split it into the proper number of elements
-
+            //Check the number of matches for each Row and retrieve the Max number(N)
+            //Create N columns after “Insert After Column” named “Col_1”, “Col_2”, etc.
+            //For each row, split it into the proper number of elements
 
             CsvUtils cu = new CsvUtils();
             cu.SetFile(InputFile);
@@ -472,6 +475,68 @@ namespace CsvLibrary
 
         }
 
+        // Takes a row and duplicates it while extracting part of a given column (Regex Group Matches)
+        public String Split_Column_Content_into_rows_based_on_matches(String InputFile, String ColumnNameToRead, String RegExPattern, int RowNumber)
+        {
+
+            CsvUtils cu = new CsvUtils();
+            cu.SetFile(InputFile);
+            // index below is line number (without counting header)
+
+            int colIdx = cu.Get_Column_Index(ColumnNameToRead);
+            if (colIdx < 0) { return "Column Does Not Exist."; }
+            //int MaxNumberOfMatches = 0;
+
+            List<String> MyRowContent = cu.dict[RowNumber];
+            String MyContent = MyRowContent[colIdx];
+
+            var pattern = @RegExPattern;
+            var matches = Regex.Matches(MyContent, pattern);
+            int NumOfMatches = matches.Count;
+
+            List<List<String>> AllNewRows = new List<List<String>>();
+
+            foreach (Match match in matches)
+            {
+                List<String> RowCopy = new List<String>(MyRowContent);
+                String MatchValue = match.Value;
+                RowCopy[colIdx] = MatchValue;
+                AllNewRows.Add(RowCopy);
+            }
+
+            Add_Rows_After2(cu, RowNumber, AllNewRows);
+            cu.Save_File_As_CSV(InputFile);
+            return "";
+        }
+
+        // Add a list of Rows after a given row
+        private void Add_Rows_After2(CsvUtils cu, int RowNumber, List<List<String>> rowsToAdd)
+        {
+            // We first convert the Dictionary to a List (easier to insert into)
+            List<List<String>> myList = DictionaryToList(cu.dict);
+            myList.InsertRange(RowNumber+1, rowsToAdd);
+            // We convert the List back to a Dictionary
+            cu.dict = ListToDictionary(myList);
+        }
+        
+
+        // Delete a single row
+        public void Delete_Row(String InputFile, int RowNumber)
+        {
+            CsvUtils cu = new CsvUtils();
+            cu.SetFile(InputFile);
+
+            List<List<String>> myList = DictionaryToList(cu.dict);
+            
+            myList.RemoveAt(RowNumber);
+
+            cu.dict = ListToDictionary(myList);
+
+            cu.Save_File_As_CSV(InputFile);
+           
+        }
+
+        // Add a new Column after an existing one
         private void Add_Column_After(CsvUtils cu, String ColumnName, String ColumnNameToAdd, String EmptyCellFiller)
         {
             int Index = cu.Get_Column_Index(ColumnName);
@@ -487,15 +552,11 @@ namespace CsvLibrary
                     }
                     
                     entry.Value.Insert(Index + 1, NewValueToInsert);
-
                 }
-                
-
             }
-            
-
         }
 
+        // Add a new Column after an existing one
         public int Add_Column_After(String InputFile, String ColumnName, String ColumnNameToAdd, String EmptyCellFiller)
         {
             CsvUtils cu = new CsvUtils();
@@ -520,6 +581,7 @@ namespace CsvLibrary
             return Index;
         }
 
+        // Add a new Column before an existing one
         public int Add_Column_Before(String InputFile, String ColumnName, String ColumnNameToAdd, String EmptyCellFiller)
         {
             CsvUtils cu = new CsvUtils();
@@ -543,5 +605,34 @@ namespace CsvLibrary
             }
             return Index;
         }
+
+        private List<List<String>> DictionaryToList(IDictionary<int,List<String>> myDict)
+        {
+            List<List<String>> TheList = new List<List<String>>();
+
+            foreach(KeyValuePair<int, List<String>> entry in myDict){
+                TheList.Add(entry.Value);
+            }
+
+            return TheList;
+        }
+
+        private IDictionary<int, List<String>>  ListToDictionary(List<List<String>> myList)
+        {
+           
+            IDictionary<int, List<String>> TheDict = new Dictionary<int, List<String>>();
+
+            int idx = 0;
+            foreach ( List<String> row in myList)
+            {
+                TheDict[idx]=row;
+                idx++;
+            }
+
+            return TheDict;
+        }
+
     }
+
+
 }
