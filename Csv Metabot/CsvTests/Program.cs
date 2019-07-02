@@ -38,11 +38,11 @@ namespace CsvTests
 
 
 
-            co.Split_Column_Content_based_on_matches(FilePath, "Material_Description", @"(?::|;)(?: )*([A-Za-z0-9]{7})", "Unit_Price", "SN");
+            co.Split_Column_Content_based_on_matches(FilePath, "Material_Description", @"(?::|;)(?: )*([A-Za-z0-9]{7})", "Result", "SN");
             //co.Delete_Row(FilePath, 1);
             Console.ReadKey();
 
-            String OutputStr = co.Split_Column_Content_based_on_group_matches(FilePath, "NovaConta1", @"([A-Za-z]+)\s([A-Za-z]+)\s(\d+)\s([A-Z]+\s+\d+)\s(\d+)\s(\d+)\s(\d+,\d+)\s(.+?)\s(\d+.\d+,\d+)\s+(.+?\s+\d+)\sValor da Parcela (.*?) Nome (.*GB)\s(.*)\s(R.*)", "NovaConta6", "Conta1SUB");
+            String OutputStr = co.Split_Column_Content_based_on_groups(FilePath, "NovaConta1", @"([A-Za-z]+)\s([A-Za-z]+)\s(\d+)\s([A-Z]+\s+\d+)\s(\d+)\s(\d+)\s(\d+,\d+)\s(.+?)\s(\d+.\d+,\d+)\s+(.+?\s+\d+)\sValor da Parcela (.*?) Nome (.*GB)\s(.*)\s(R.*)", "NovaConta6", "Conta1SUB");
 
 
             //String OutputStr = co.Split_Column_Content_based_on_matches(FilePath, "Total", @"\d*,*\d+.\d+", "Total","Subtotal_");

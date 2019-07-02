@@ -331,7 +331,8 @@ namespace CsvLibrary
         }
 
         // Transforms the content of an entire column (by replacing it with a RegEx MATCH from a regular expression)
-        public String Split_Column_Content_based_on_group_matches(String InputFile, String ColumnNameToRead, String RegExPattern, String InsertAfterColumnName, String ColumnNameStub)
+        
+        public String Split_Column_Content_based_on_groups(String InputFile, String ColumnNameToRead, String RegExPattern, String InsertAfterColumnName, String ColumnNameStub)
         {
 
             //Check the number of matches for each Row and retrieve the Max number(N)
@@ -343,6 +344,8 @@ namespace CsvLibrary
             cu.SetFile(InputFile);
             int colIdx = cu.Get_Column_Index(ColumnNameToRead);
             if (colIdx < 0) { return "Column Does Not Exist."; }
+            int colIdxInsert = cu.Get_Column_Index(InsertAfterColumnName);
+            if (colIdxInsert < 0) { return "Column Does Not Exist:" + InsertAfterColumnName; }
             int MaxNumberOfGroups = 0;
 
 
@@ -366,7 +369,7 @@ namespace CsvLibrary
             {
                 int tempIdx = MaxNumberOfGroups - i;
                 //icolIdx = MaxNumberOfMatches - i;
-                Add_Column_After(cu, ColumnNameToRead, ColumnNameStub + tempIdx, "");
+                Add_Column_After(cu, InsertAfterColumnName, ColumnNameStub + tempIdx, "");
             }
 
             foreach (KeyValuePair<int, List<String>> entry in cu.dict)
@@ -389,11 +392,11 @@ namespace CsvLibrary
                             if (CurrentCellValue.Contains(','))
                             {
                                // Console.WriteLine("Quote detected");
-                                entry.Value[colIdx + idxGrp] = "\"" + CurrentCellValue + "\"";
+                                entry.Value[colIdxInsert + idxGrp] = "\"" + CurrentCellValue + "\"";
                             }
                             else
                             {
-                                entry.Value[colIdx + idxGrp] = group.Value;
+                                entry.Value[colIdxInsert + idxGrp] = group.Value;
                             }
                         }
 
@@ -406,7 +409,7 @@ namespace CsvLibrary
             return "";
 
         }
-
+        
 
         // Transforms the content of an entire column (by replacing it with a RegEx MATCH from a regular expression)
         public String Split_Column_Content_based_on_matches(String InputFile, String ColumnNameToRead, String RegExPattern, String InsertAfterColumnName, String ColumnNameStub)
@@ -416,11 +419,12 @@ namespace CsvLibrary
             //Create N columns after “Insert After Column” named “Col_1”, “Col_2”, etc.
             //For each row, split it into the proper number of elements
 
-
             CsvUtils cu = new CsvUtils();
             cu.SetFile(InputFile);
             int colIdx = cu.Get_Column_Index(ColumnNameToRead);
-            if (colIdx < 0) { return "Column Does Not Exist."; }
+            if (colIdx < 0) { return "Column Does Not Exist: "+ ColumnNameToRead; }
+            int colIdxInsert = cu.Get_Column_Index(InsertAfterColumnName);
+            if (colIdxInsert < 0) { return "Column Does Not Exist:"+ InsertAfterColumnName; }
             int MaxNumberOfMatches = 0;
 
 
@@ -444,7 +448,7 @@ namespace CsvLibrary
             {
                 int tempIdx = MaxNumberOfMatches - i;
                 //icolIdx = MaxNumberOfMatches - i;
-                Add_Column_After(cu, ColumnNameToRead, ColumnNameStub + tempIdx, "");
+                Add_Column_After(cu, InsertAfterColumnName, ColumnNameStub + tempIdx, "");
             }
 
             foreach (KeyValuePair<int, List<String>> entry in cu.dict)
@@ -467,11 +471,11 @@ namespace CsvLibrary
                             if (CurrentCellValue.Contains(','))
                             {
                                 // Console.WriteLine("Quote detected");
-                                entry.Value[colIdx + idxGrp] = "\"" + CurrentCellValue + "\"";
+                                entry.Value[colIdxInsert + idxGrp] = "\"" + CurrentCellValue + "\"";
                             }
                             else
                             {
-                                entry.Value[colIdx + idxGrp] = match.Groups[1].Value;
+                                entry.Value[colIdxInsert + idxGrp] = match.Groups[1].Value;
                             }
                         }
 
@@ -485,6 +489,7 @@ namespace CsvLibrary
 
         }
 
+        /*
         // Transforms the content of an entire column (by replacing it with a RegEx MATCH from a regular expression)
         public String Split_Column_Content_based_on_groups(String InputFile, String ColumnNameToRead, String RegExPattern, String InsertAfterColumnName, String ColumnNameStub)
         {
@@ -497,6 +502,8 @@ namespace CsvLibrary
             cu.SetFile(InputFile);
             int colIdx = cu.Get_Column_Index(ColumnNameToRead);
             if (colIdx < 0) { return "Column Does Not Exist."; }
+            int colIdxInsert = cu.Get_Column_Index(InsertAfterColumnName);
+            if (colIdxInsert < 0) { return "Column Does Not Exist:" + InsertAfterColumnName; }
             int MaxNumberOfMatches = 0;
 
             foreach (KeyValuePair<int, List<String>> entry in cu.dict)
@@ -517,7 +524,7 @@ namespace CsvLibrary
             {
                 int tempIdx = MaxNumberOfMatches - i;
                 //icolIdx = MaxNumberOfMatches - i;
-                Add_Column_After(cu, ColumnNameToRead, ColumnNameStub + tempIdx, "");
+                Add_Column_After(cu, InsertAfterColumnName, ColumnNameStub + tempIdx, "");
             }
 
             foreach (KeyValuePair<int, List<String>> entry in cu.dict)
@@ -538,11 +545,11 @@ namespace CsvLibrary
                        if (CurrentCellValue.Contains(','))
                         {
                             //Console.WriteLine("Quote detected");
-                            entry.Value[colIdx + idxMatch] = "\"" + CurrentCellValue + "\"";
+                            entry.Value[colIdxInsert + idxMatch] = "\"" + CurrentCellValue + "\"";
                         }
                         else
                         {
-                            entry.Value[colIdx + idxMatch] = match.Value;
+                            entry.Value[colIdxInsert + idxMatch] = match.Value;
                         }
                         
                     }
@@ -554,6 +561,7 @@ namespace CsvLibrary
             return "";
 
         }
+        */
 
         // Takes a row and duplicates it while extracting part of a given column (Regex Group Matches)
         public String Split_Column_Content_into_rows_based_on_matches(String InputFile, String ColumnNameToRead, String RegExPattern, int RowNumber)
