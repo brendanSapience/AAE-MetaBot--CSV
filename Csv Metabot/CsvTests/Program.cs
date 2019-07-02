@@ -19,40 +19,14 @@ namespace CsvTests
             AddressOperations aop = new AddressOperations();
             StringOperations sop = new StringOperations();
 
-
-            String Res2 = "CHIPPEWA CAPITAL, LLC PO Box 671206 Detroit, Ml48267-1206 USA";
-            String Res3 = "ENDEKA Ceramics Inc. P.O. BOX934597 ATLANTA GA 31193-4597";
-            String Res4 = "CDW Direct P.O. Box 75723 __ Chicago, IL 60675-5723";
-            String Res5 = "Robert Half Technology 12400 COLLECTIONS CENTER DRIVE CHICAGO IL 60693";
-            String Res6 = "333 W. 7th Street Suite 333 Royal Oak, MI 48067";
-            String Res7 = "GlobalMaterial Technologies 8468 SolutionCenter Chicago, IL 60677-8004";
-            String Res8 = "8443 Solution Center Chicago, IL 60677-8004";
-            String Res9 = "8443 Solution Center Chicago, IL 60677 - 8004";
-
-            // String res =  aop.Process_Address_US("ASURION Attention: RITA SWEENEY PO Box 209348 Austin, TX 78720-9348");
-            //String res0 = aop.Process_Address_US("818 lexington ave, apt 6A, Brooklyn, NY 11221");
-            //String res1 = aop.Process_Address_US("119 Mott St, Apt 4, NY, 10013");
-
-            //int Test = sop.GetDamerauLevenshteinDistance("Hello1g", "Hello!");
-            //Console.WriteLine("String Distance: " + Test);
-            //Console.ReadKey();
-
-           // Console.Write(aop.Process_Address_US(Res2) + "\n");
-            //Console.Write(aop.Process_Address_US(Res3) + "\n");
-            //Console.Write(aop.Process_Address_US(Res4) + "\n");
-            //Console.Write(aop.Process_Address_US(Res5) + "\n");
-            //Console.Write(aop.Process_Address_US(Res6) + "\n");
-            //Console.Write(aop.Process_Address_US(Res7) + "\n");
-            //Console.Write(aop.Process_Address_US(Res8) + "\n");
-            //Console.Write(aop.Process_Address_US(Res9) + "\n");
-            //Console.ReadKey();
+        
             
-            string fileName = "Samsung_IQBotExtractedData.csv";
+            string fileName = "source.csv";
            // string sourcePath = @"C:\Users\brendan.sapience\Documents\git\AAE-MetaBot--CSV\Documentation\Tests";
            // string targetPath = @"C:\IQBot Input";
 
-            string sourcePath = @"C:\dev_csv";
-            string targetPath = @"C:\dev_csv\Output";
+            string sourcePath = @"C:\Users\Administrator\Desktop\customers\Dell";
+            string targetPath = @"C:\Users\Administrator\Desktop\customers\Dell\RES";
 
             // Use Path class to manipulate file and directory paths.
             string sourceFile = System.IO.Path.Combine(sourcePath, fileName);
@@ -64,8 +38,8 @@ namespace CsvTests
 
 
 
-            co.Split_Column_Content_into_rows_based_on_matches(FilePath, "Product detail", @"([A-Z]{2}.{10}EE)", 1);
-            co.Delete_Row(FilePath, 1);
+            co.Split_Column_Content_based_on_matches(FilePath, "Material_Description", @"(?::|;)(?: )*([A-Za-z0-9]{7})", "Unit_Price", "SN");
+            //co.Delete_Row(FilePath, 1);
             Console.ReadKey();
 
             String OutputStr = co.Split_Column_Content_based_on_group_matches(FilePath, "NovaConta1", @"([A-Za-z]+)\s([A-Za-z]+)\s(\d+)\s([A-Z]+\s+\d+)\s(\d+)\s(\d+)\s(\d+,\d+)\s(.+?)\s(\d+.\d+,\d+)\s+(.+?\s+\d+)\sValor da Parcela (.*?) Nome (.*GB)\s(.*)\s(R.*)", "NovaConta6", "Conta1SUB");
